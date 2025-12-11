@@ -24,13 +24,13 @@ export const CardWrapper = ({
     showSocial,
 }: CardWrapperProps) => {
     return (
-        <Card className="w-full max-w-md border-none shadow-none">
+        <Card className="w-full max-w-md border-none shadow-none gap-0">
             <CardHeader>
                 <div className="flex w-full flex-col items-center justify-center gap-y-4">
                     <h1 className="text-3xl font-semibold text-black">{headerLabel}</h1>
                 </div>
             </CardHeader>
-            <CardContent>{children}</CardContent>
+            <CardContent className="mb-4">{children}</CardContent>
             {showSocial && (
                 <CardFooter>
                     <Social />

@@ -19,12 +19,14 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
+import { login } from "@/actions/auth";
 
 export const LoginForm = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+
+    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
@@ -34,9 +36,23 @@ export const LoginForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        console.log(values);
-        router.push("/dashboard");
+    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+        setLoading(true);
+        try {
+            const data = await login(values);
+
+            if (data?.data) {
+                localStorage.setItem("access_token", data.data.access_token);
+                localStorage.setItem("refresh_token", data.data.refresh_token);
+                router.push("/dashboard");
+            } else {
+                console.error(data?.error || "Login failed");
+            }
+        } catch (error) {
+            console.error("Error logging in", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -61,9 +77,10 @@ export const LoginForm = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="Enter your username or email"
-                                            type="email"
+                                            placeholder="Enter your email"
+                                            // type="email" // Allow username
                                             className="h-12 border-0 bg-gray-100"
+                                            disabled={loading}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -83,6 +100,7 @@ export const LoginForm = () => {
                                                 placeholder="Enter password"
                                                 type={showPassword ? "text" : "password"}
                                                 className="h-12 border-0 bg-gray-100 pr-10"
+                                                disabled={loading}
                                             />
                                         </FormControl>
                                         <button

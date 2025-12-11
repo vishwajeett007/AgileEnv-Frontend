@@ -15,11 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { forgotPassword } from "@/actions/auth";
 
 export const ForgotPasswordForm = () => {
     const router = useRouter();
+
+    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof ResetSchema>>({
         resolver: zodResolver(ResetSchema),
@@ -28,9 +31,21 @@ export const ForgotPasswordForm = () => {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof ResetSchema>) => {
-        console.log(values);
-        router.push("/verify-otp");
+    const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
+        setLoading(true);
+        try {
+            const res = await forgotPassword(values);
+
+            if (res.success) {
+                router.push(`/verify-otp?email=${values.email}`);
+            } else {
+                console.error(res.error || "Failed to send reset email");
+            }
+        } catch (error) {
+            console.error("Error sending reset email", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -57,6 +72,7 @@ export const ForgotPasswordForm = () => {
                                             placeholder="Enter your email"
                                             type="email"
                                             className="h-12 border-0 bg-gray-100"
+                                            disabled={loading}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -68,6 +84,9 @@ export const ForgotPasswordForm = () => {
                         Send
                     </Button>
                 </form>
+                <Button className="w-full bg-gray-200 text-gray-900 border border-gray-400 focus:ring focus:ring-8 hover:bg-black hover:text-white mt-4 h-12 text-md font-medium" onClick={() => router.push("/login")}>
+                    Back to login
+                </Button>
             </Form>
         </CardWrapper>
     );

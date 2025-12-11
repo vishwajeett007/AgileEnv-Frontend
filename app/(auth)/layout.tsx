@@ -6,7 +6,7 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen w-full">
+        <div className="flex min-h-screen w-full overflow-hidden">
             {/* Left Side - Branding & Illustration */}
             <div className="hidden w-1/2 flex-col justify-between bg-[#DAE9FA] p-10 lg:flex">
                 <div className="flex items-center gap-2">
@@ -17,7 +17,7 @@ export default function AuthLayout({
                         height={40}
                         className="h-10 w-10"
                     />
-                    <h1 className="text-3xl font-bold text-[#0057E5]">Agile</h1>
+                    <h1 className="text-3xl font-bold pb-1 text-[#0057E5]">Agile</h1>
                 </div>
 
                 <div className="flex flex-1 items-center justify-center">
@@ -40,7 +40,7 @@ export default function AuthLayout({
             </div>
 
             {/* Right Side - Auth Forms */}
-            <div className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">
+            <div className="flex w-full items-center justify-center bg-white p-4 lg:w-1/2 overflow-auto">
                 <div className="w-full max-w-md">{children}</div>
             </div>
         </div>
