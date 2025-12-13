@@ -164,7 +164,7 @@ export const RegisterForm = () => {
                     />
 
                     <div className="flex items-center space-x-2 pt-1">
-                        <Checkbox id="terms" className="h-4 w-4" />
+                        <Checkbox id="terms" className="h-4 w-4" required />
                         <label
                             htmlFor="terms"
                             className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-500"

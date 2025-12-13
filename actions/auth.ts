@@ -1,8 +1,9 @@
-"use server";
+"use client";
 
 import * as z from "zod";
-import { RegisterSchema, LoginSchema, ResetSchema } from "@/schemas";
-import { AuthError } from "next-auth";
+import { RegisterSchema, LoginSchema, ResetSchema, VerifySchema, ResetCompleteSchema } from "@/schemas";
+// import { AuthError } from "next-auth";
+// import { headers } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -118,10 +119,13 @@ export const verifyRegistration = async (email: string, otp_code: string) => {
 
 export const resendRegistrationOtp = async (email: string) => {
     try {
-        const response = await fetch(`${API_URL}resend-otp-registration/`, {
+        const response = await fetch(`${API_URL}resend-otp-password/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({
+                email,
+                purpose: "registration"
+            }),
         });
 
         if (!response.ok) {
@@ -133,3 +137,156 @@ export const resendRegistrationOtp = async (email: string) => {
         return { error: "Something went wrong!" };
     }
 };
+
+export const resetPassword = async (values: z.infer<typeof VerifySchema>) => {
+    const validatedFields = VerifySchema.safeParse(values);
+
+    if (!validatedFields.success) {
+        return { error: "Invalid Fields!" };
+    }
+
+    try {
+        const response = await fetch(`${API_URL}resetpassword/`, {
+
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: validatedFields.data.email,
+                otp: validatedFields.data.otp,
+            }),
+        });
+        if (!response.ok) {
+            return { error: "Failed to Verify OTP!" };
+        }
+
+        const data = await response.json();
+        return { success: "Verified!", data };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}
+
+export const completeReset = async (values: z.infer<typeof ResetCompleteSchema>) => {
+
+    const validatedFields = ResetCompleteSchema.safeParse(values);
+    if (!validatedFields.success) {
+        return { error: "Invalid Fields!" }
+    }
+
+    try {
+        const response = await fetch(`${API_URL}complete-reset/`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                reset_token: validatedFields.data.reset_token,
+                password: validatedFields.data.password,
+                password2: validatedFields.data.confirmPassword,
+            })
+        });
+        if (!response.ok) {
+            return { error: "Failed to Verify OTP!" };
+        }
+        return { success: "Verified!" };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}
+
+export const googleRedirect = async () => {
+    try {
+        const response = await fetch(`${API_URL}auth/google/login/`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+            return { error: "Failed to Redirect!" };
+        }
+
+        const data = await response.json();
+        const link = data.authorization_url;
+        // window.open(link, "_blank");
+        window.location.href = link;
+
+        return { success: "Redirected!" };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}
+
+export const googleCallback = async (code: string, state: string) => {
+    try {
+        const response = await fetch(`${API_URL}auth/google/callback/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                code,
+                state
+            })
+        });
+        if (!response.ok) {
+            return { error: "Failed to Redirect!" };
+        }
+
+        const data = await response.json();
+        const accessToken = data.access_token;
+        const refreshToken = data.refresh_token;
+        const user = data.user;
+        sessionStorage.setItem("access_token", accessToken);
+        sessionStorage.setItem("refresh_token", refreshToken);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        return { success: "Logged In!" };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}
+
+
+export const githubRedirect = async () => {
+    try {
+        const response = await fetch(`${API_URL}auth/github/login/`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+            return { error: "Failed to Redirect!" };
+        }
+
+        const data = await response.json();
+        const link = data.authorization_url;
+        // window.open(link, "_blank");
+        window.location.href = link;
+
+        return { success: "Redirected!" };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}
+
+export const githubCallback = async (code: string, state: string) => {
+    try {
+        const response = await fetch(`${API_URL}auth/github/callback/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+            return { error: "Failed to Redirect!" };
+        }
+
+        const data = await response.json();
+        const accessToken = data.access_token;
+        const refreshToken = data.refresh_token;
+        const user = data.user;
+        sessionStorage.setItem("access_token", accessToken);
+        sessionStorage.setItem("refresh_token", refreshToken);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        return { success: "Logged In!" };
+    }
+    catch (error) {
+        return { error: "Something went wrong!" };
+    }
+}

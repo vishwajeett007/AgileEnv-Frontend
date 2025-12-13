@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { googleRedirect, githubRedirect } from "@/actions/auth";
 
 export const Social = () => {
     return (
@@ -10,7 +11,7 @@ export const Social = () => {
                 size="lg"
                 className="w-full gap-1 border border-blue-500 bg-white text-[#0057E5] hover:bg-slate-50 flex"
                 variant="outline"
-                onClick={() => { }}
+                onClick={googleRedirect}
             >
                 <Image
                     src="/Images/GoogleLogo.svg"
@@ -24,7 +25,7 @@ export const Social = () => {
                 size="lg"
                 className="w-full gap-1 border border-blue-500 bg-white text-[#0057E5] hover:bg-slate-50 flex"
                 variant="outline"
-                onClick={() => { }}
+                onClick={githubRedirect}
             >
                 <Image
                     src="/Images/GithubLogo.svg"

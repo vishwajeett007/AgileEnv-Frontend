@@ -1,22 +1,25 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyRegistration, resendRegistrationOtp } from "@/actions/auth";
+import { useEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 export const VerifyRegistrationForm = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
 
-    const [otp, setOtp] = React.useState<string[]>(new Array(6).fill(""));
-    const [loading, setLoading] = React.useState(false);
-    const [timer, setTimer] = React.useState(30);
-    const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+    const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+    const [loading, setLoading] = useState(false);
+    const [timer, setTimer] = useState(30);
+    const [success, setSuccess] = useState(false);
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         let interval: NodeJS.Timeout;
         if (timer > 0) {
             interval = setInterval(() => {
@@ -37,13 +40,13 @@ export const VerifyRegistrationForm = () => {
         }
     };
 
-    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Backspace" && !otp[index] && index > 0 && inputRefs.current[index - 1]) {
             inputRefs.current[index - 1]?.focus();
         }
     };
 
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
         if (pastedData.every(char => !isNaN(Number(char)))) {
@@ -64,11 +67,8 @@ export const VerifyRegistrationForm = () => {
         try {
             const data = await verifyRegistration(email, otpCode);
 
-            if (data.data) {
-                // Store tokens
-                localStorage.setItem("access_token", data.data.access_token);
-                localStorage.setItem("refresh_token", data.data.refresh_token);
-                router.push("/dashboard");
+            if (data.success) {
+                setSuccess(true);
             } else {
                 console.error(data.error || "Verification failed");
             }
@@ -94,7 +94,25 @@ export const VerifyRegistrationForm = () => {
             console.error("Error resending otp", error);
         }
     };
+    if (success) {
+        return (
 
+            <Card className="w-full max-w-md border-none shadow-none">
+                <CardContent className="flex w-full flex-col items-center justify-center space-y-6 pt-6 ">
+                    <CheckCircle className="h-16 w-16 text-[#0057E5]" />
+                    <h1 className="text-2xl font-semibold text-black">Account Created</h1>
+                    <p className="text-sm text-center text-gray-600">
+                        Your account has been successfully created.
+                    </p>
+                    <Link href="/login" className="w-full">
+                        <Button className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium">
+                            Back to login
+                        </Button>
+                    </Link>
+                </CardContent>
+            </Card>
+        )
+    }
     return (
         <Card className="w-full max-w-md border-none shadow-none">
             <CardHeader className="flex flex-col items-center justify-center space-y-2 p-0 pb-10">

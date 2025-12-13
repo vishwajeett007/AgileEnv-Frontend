@@ -119,7 +119,9 @@ export const LoginForm = () => {
 
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="remember" className="border-gray-400" />
+                            <Checkbox id="remember" className="border-gray-400"
+                                onCheckedChange={(checked) => console.log(checked)}
+                            />
                             <label
                                 htmlFor="remember"
                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-600"

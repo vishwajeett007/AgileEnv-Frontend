@@ -23,6 +23,8 @@ export const RegisterSchema = z.object({
         message: "Name is required",
     }).max(40, {
         message: "Name too long (max 40)",
+    }).regex(/^[a-zA-Z0-9_@]+$/, {
+        message: "Username can only contain letters, numbers, underscores and @",
     }),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -35,14 +37,26 @@ export const ResetSchema = z.object({
     }),
 });
 
-export const NewPasswordSchema = z.object({
-    password: z.string().min(6, {
-        message: "Minimum 6 characters required",
+export const VerifySchema = z.object({
+    email: z.string().email({
+        message: "Email is required",
     }),
-    confirmPassword: z.string().min(6, {
+    otp: z.string().min(6, {
         message: "Minimum 6 characters required",
+    })
+})
+
+export const ResetCompleteSchema = z.object({
+    reset_token: z.string().min(1, {
+        message: "Reset token is required",
     }),
+    password: z.string().min(8, {
+        message: "Minimum 8 characters required",
+    }).regex(new RegExp(".*[A-Z].*"), "One uppercase character")
+        .regex(new RegExp(".*[0-9].*"), "One number")
+        .regex(new RegExp(".*[^a-zA-Z0-9].*"), "One special character"),
+    confirmPassword: z.string().min(1, "Password confirmation is required"),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-});
+})

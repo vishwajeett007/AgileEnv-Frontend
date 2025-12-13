@@ -1,22 +1,23 @@
 "use client";
 
-import * as React from "react";
+import { useState, useRef, useEffect, KeyboardEvent, ClipboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
-import { forgotPassword } from "@/actions/auth";
+import { forgotPassword, resetPassword } from "@/actions/auth";
+import { toast } from "sonner";
 
 export const VerifyOtpForm = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
 
-    const [otp, setOtp] = React.useState<string[]>(new Array(6).fill(""));
-    const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+    const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    const [timer, setTimer] = React.useState(30);
+    const [timer, setTimer] = useState(30);
 
-    React.useEffect(() => {
+    useEffect(() => {
         let interval: NodeJS.Timeout;
         if (timer > 0) {
             interval = setInterval(() => {
@@ -37,13 +38,13 @@ export const VerifyOtpForm = () => {
         }
     };
 
-    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Backspace" && !otp[index] && index > 0 && inputRefs.current[index - 1]) {
             inputRefs.current[index - 1]?.focus();
         }
     };
 
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
         if (pastedData.every(char => !isNaN(Number(char)))) {
@@ -65,9 +66,29 @@ export const VerifyOtpForm = () => {
 
             if (!res.success) {
                 console.error(res.error || "Failed to resend OTP");
+                toast.error(res.error || "Failed to resend OTP");
+            } else {
+                toast.success("OTP resent successfully");
             }
         } catch (error) {
             console.error("Error resending OTP", error);
+            toast.error("Something went wrong");
+        }
+    };
+
+    const handleVerify = async () => {
+        const otpCode = otp.join("");
+        if (otpCode.length < 6 || !email) return;
+
+        try {
+            const res = await resetPassword({ email, otp: otpCode });
+            if (!res.success && res.data?.reset_token) {
+                router.push(`/reset-password?token=${res.data.reset_token}`)
+            } else {
+                console.error(res.error || "Verification Failed!");
+            }
+        } catch (error) {
+            console.error("Error verifying OTP", error);
         }
     };
 
@@ -101,7 +122,8 @@ export const VerifyOtpForm = () => {
                     <Button
                         className="w-full bg-[#0057E5] text-lg font-medium hover:bg-[#0046b8]"
                         size="lg"
-                        onClick={() => router.push("/reset-password")}
+                        onClick={handleVerify}
+                        disabled={otp.join("").length < 6}
                     >
                         Enter OTP
                     </Button>

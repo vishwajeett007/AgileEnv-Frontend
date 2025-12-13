@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { NewPasswordSchema } from "@/schemas";
 import {
     Form,
     FormControl,
@@ -18,23 +17,46 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { completeReset } from "@/actions/auth";
+import { toast } from "sonner";
+import { ResetCompleteSchema } from "@/schemas";
 
 export const NewPasswordForm = () => {
     const [success, setSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
 
-    const form = useForm<z.infer<typeof NewPasswordSchema>>({
-        resolver: zodResolver(NewPasswordSchema),
+    const form = useForm<z.infer<typeof ResetCompleteSchema>>({
+        resolver: zodResolver(ResetCompleteSchema),
         defaultValues: {
             password: "",
             confirmPassword: "",
+            reset_token: token || "",
         },
     });
 
-    const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
-        console.log(values);
-        setSuccess(true);
+    const onSubmit = async (values: z.infer<typeof ResetCompleteSchema>) => {
+        if (!token) {
+            console.error("Missing reset token!");
+            toast.error("Missing reset token!");
+            return;
+        }
+
+        try {
+            const res = await completeReset(values);
+            if (res.success) {
+                setSuccess(true);
+                toast.success("Password reset successful!");
+            } else {
+                toast.error(res.error || "Failed to reset password!");
+            }
+        } catch (error) {
+            console.error("Failed to reset password", error);
+            toast.error("Something went wrong!");
+        }
     };
 
     if (success) {
@@ -46,8 +68,8 @@ export const NewPasswordForm = () => {
             >
                 <div className="flex w-full flex-col items-center justify-center space-y-6">
                     <h1 className="text-2xl font-semibold text-gray-900">Password Changed</h1>
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-green-100">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-200">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-green-200">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="32"
