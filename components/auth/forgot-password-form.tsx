@@ -80,11 +80,17 @@ export const ForgotPasswordForm = () => {
                             )}
                         />
                     </div>
-                    <Button type="submit" className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium">
-                        Send
+                    <Button type="submit"
+                        className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium"
+                        disabled={loading}
+                    >
+                        {loading ? "Sending..." : "Send"}
                     </Button>
                 </form>
-                <Button className="w-full bg-gray-200 text-gray-900 border border-gray-400 focus:ring focus:ring-8 hover:bg-black hover:text-white mt-4 h-12 text-md font-medium" onClick={() => router.push("/login")}>
+                <Button type="button"
+                    className="w-full bg-gray-200 text-gray-900 border border-gray-400 focus:ring focus:ring-8 hover:bg-black hover:text-white mt-4 h-12 text-md font-medium"
+                    onClick={() => router.push("/login")}
+                >
                     Back to login
                 </Button>
             </Form>

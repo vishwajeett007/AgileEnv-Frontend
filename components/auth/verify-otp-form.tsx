@@ -83,6 +83,7 @@ export const VerifyOtpForm = () => {
         try {
             const res = await resetPassword({ email: email, otp: otpCode });
             if (res.success || res.data?.reset_token) {
+                toast.success("OTP verified successfully");
                 router.push(`/reset-password?token=${res.data.reset_token}`)
             } else {
                 console.error(res.error || "Verification Failed!");

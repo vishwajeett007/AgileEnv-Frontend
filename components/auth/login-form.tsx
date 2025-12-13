@@ -21,6 +21,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
     const router = useRouter();
@@ -43,9 +44,11 @@ export const LoginForm = () => {
             const data = await login(values);
 
             if (data?.success) {
+                toast.success("Login successful");
                 router.push("/dashboard");
             } else {
                 console.error(data?.error || "Login failed");
+                toast.error(data?.error || "Login failed");
             }
         } catch (error) {
             console.error("Error logging in", error);
@@ -146,8 +149,11 @@ export const LoginForm = () => {
                         </Link>
                     </div>
 
-                    <Button type="submit" className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium">
-                        Login
+                    <Button type="submit"
+                        className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium"
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in..." : "Login"}
                     </Button>
                 </form>
             </Form>

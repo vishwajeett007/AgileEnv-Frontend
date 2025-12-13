@@ -171,7 +171,7 @@ export const verifyRegistration = async (email: string, otp_code: string) => {
 
 export const resendRegistrationOtp = async (email: string) => {
     try {
-        const response = await fetch(`${API_URL}resend-otp-password/`, {
+        const response = await fetch(`${API_URL}resend-otp/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

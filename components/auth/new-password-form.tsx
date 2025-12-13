@@ -39,6 +39,7 @@ export const NewPasswordForm = () => {
         },
     });
 
+    const [loading, setLoading] = useState(false);
     const onSubmit = async (values: z.infer<typeof ResetCompleteSchema>) => {
         if (!token) {
             console.error("Missing reset token!");
@@ -47,6 +48,7 @@ export const NewPasswordForm = () => {
         }
 
         try {
+            setLoading(true);
             const res = await completeReset(values);
             if (res.success) {
                 setSuccess(true);
@@ -57,6 +59,8 @@ export const NewPasswordForm = () => {
         } catch (error) {
             console.error("Failed to reset password", error);
             toast.error("Something went wrong!");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -164,8 +168,11 @@ export const NewPasswordForm = () => {
                             )}
                         />
                     </div>
-                    <Button type="submit" className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium">
-                        Done
+                    <Button type="submit"
+                        className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium"
+                        disabled={loading}
+                    >
+                        {loading ? "Updating..." : "Done"}
                     </Button>
                 </form>
             </Form>

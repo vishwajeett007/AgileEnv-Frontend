@@ -7,6 +7,7 @@ import { verifyRegistration, resendRegistrationOtp } from "@/actions/auth";
 import { useEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export const VerifyRegistrationForm = () => {
     const router = useRouter();
@@ -69,11 +70,14 @@ export const VerifyRegistrationForm = () => {
 
             if (data.success) {
                 setSuccess(true);
+                toast.success("Verification successful");
             } else {
                 console.error(data.error || "Verification failed");
+                toast.error(data.error || "Verification failed");
             }
         } catch (error) {
             console.error("Error verifying otp", error);
+            toast.error("Verification failed");
         } finally {
             setLoading(false);
         }
@@ -86,12 +90,14 @@ export const VerifyRegistrationForm = () => {
         try {
             const res = await resendRegistrationOtp(email);
             if (res.success) {
-                console.log("OTP Resent");
+                toast.success("OTP Resent");
             } else {
                 console.error(res.error || "Failed to resend OTP");
+                toast.error(res.error || "Failed to resend OTP");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error resending otp", error);
+            toast.error(error || "Failed to resend OTP");
         }
     };
     if (success) {

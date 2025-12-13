@@ -21,6 +21,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/actions/auth";
+import { toast } from "sonner";
 
 export const RegisterForm = () => {
     const router = useRouter();
@@ -45,9 +46,11 @@ export const RegisterForm = () => {
             const res = await register(values);
 
             if (res.success && res.email) {
+                toast.success("Check your email for verification");
                 router.push(`/verify-email?email=${res.email}`);
             } else {
                 console.error(res.error || "Registration failed");
+                toast.error(res.error || "Registration failed");
             }
         } catch (error) {
             console.error("Error submitting form", error);
@@ -174,8 +177,11 @@ export const RegisterForm = () => {
                         <Link href="#" className="underline text-xs font-medium text-blue-500">terms and conditions</Link>
                     </div>
 
-                    <Button type="submit" className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-10 text-sm mt-2">
-                        Sign up
+                    <Button type="submit"
+                        className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-10 text-sm mt-2"
+                        disabled={loading}
+                    >
+                        {loading ? "Signing up..." : "Sign up"}
                     </Button>
                 </form>
             </Form>
