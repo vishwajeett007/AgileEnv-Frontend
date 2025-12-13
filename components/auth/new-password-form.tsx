@@ -21,6 +21,7 @@ import { useSearchParams } from "next/navigation";
 import { completeReset } from "@/actions/auth";
 import { toast } from "sonner";
 import { ResetCompleteSchema } from "@/schemas";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const NewPasswordForm = () => {
     const [success, setSuccess] = useState(false);
@@ -63,6 +64,8 @@ export const NewPasswordForm = () => {
             setLoading(false);
         }
     };
+
+    const throttledSubmit = useThrottle(onSubmit, 2000);
 
     if (success) {
         return (
@@ -111,7 +114,7 @@ export const NewPasswordForm = () => {
                 Enter your new password below
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}

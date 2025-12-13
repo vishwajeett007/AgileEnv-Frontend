@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/actions/auth";
 import { toast } from "sonner";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const RegisterForm = () => {
     const router = useRouter();
@@ -59,6 +60,9 @@ export const RegisterForm = () => {
         }
     };
 
+    const throttledSubmit = useThrottle(onSubmit, 2000);
+
+
     return (
         <CardWrapper
             headerLabel="Create an account"
@@ -70,7 +74,7 @@ export const RegisterForm = () => {
                 Already have an account? <Link href="/login" className="text-blue-600 hover:underline">log in</Link>
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-2">
                     <FormField
                         control={form.control}
                         name="username"
@@ -80,7 +84,7 @@ export const RegisterForm = () => {
                                 <FormControl>
                                     <Input
                                         {...field}
-                                        placeholder="abc" // From design
+                                        placeholder="abc"
                                         className="h-10 border-0 bg-gray-100"
                                         disabled={loading}
                                     />

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { forgotPassword, resetPassword } from "@/actions/auth";
 import { toast } from "sonner";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const VerifyOtpForm = () => {
     const router = useRouter();
@@ -94,6 +95,10 @@ export const VerifyOtpForm = () => {
         }
     };
 
+    const throttledVerify = useThrottle(handleVerify, 2000);
+    const throttledResend = useThrottle(handleResend, 2000);
+
+
     return (
         <Card className="w-full max-w-md border-none shadow-none">
             <CardHeader className="flex flex-col items-center justify-center space-y-2 p-0 pb-10">
@@ -124,7 +129,7 @@ export const VerifyOtpForm = () => {
                     <Button
                         className="w-full bg-[#0057E5] text-lg font-medium hover:bg-[#0046b8]"
                         size="lg"
-                        onClick={handleVerify}
+                        onClick={throttledVerify}
                         disabled={otp.join("").length < 6}
                     >
                         Enter OTP
@@ -135,7 +140,7 @@ export const VerifyOtpForm = () => {
                         variant="outline"
                         className="w-full border-blue-200 text-[#0057E5] hover:bg-blue-50"
                         size="lg"
-                        onClick={handleResend}
+                        onClick={throttledResend}
                         disabled={timer > 0}
                     >
                         {timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}

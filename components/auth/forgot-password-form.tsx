@@ -18,6 +18,7 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { forgotPassword } from "@/actions/auth";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const ForgotPasswordForm = () => {
     const router = useRouter();
@@ -47,7 +48,7 @@ export const ForgotPasswordForm = () => {
             setLoading(false);
         }
     };
-
+    const throttledSubmit = useThrottle(onSubmit, 2000);
     return (
         <CardWrapper
             headerLabel="Forgot Password"
@@ -58,7 +59,7 @@ export const ForgotPasswordForm = () => {
                 Please enter your registered email to receive a verification code.
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}

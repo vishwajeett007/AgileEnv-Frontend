@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "reac
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const VerifyRegistrationForm = () => {
     const router = useRouter();
@@ -100,6 +101,10 @@ export const VerifyRegistrationForm = () => {
             toast.error(error || "Failed to resend OTP");
         }
     };
+
+    const throttledVerify = useThrottle(onVerify, 2000);
+    const throttledResend = useThrottle(onResend, 2000);
+
     if (success) {
         return (
 
@@ -150,7 +155,7 @@ export const VerifyRegistrationForm = () => {
                     <Button
                         className="w-full bg-[#0057E5] text-lg font-medium hover:bg-[#0046b8]"
                         size="lg"
-                        onClick={onVerify}
+                        onClick={throttledVerify}
                         disabled={loading}
                     >
                         {loading ? "Verifying..." : "Enter OTP"}
@@ -161,7 +166,7 @@ export const VerifyRegistrationForm = () => {
                         variant="outline"
                         className="w-full border-blue-200 text-[#0057E5] hover:bg-blue-50"
                         size="lg"
-                        onClick={onResend}
+                        onClick={throttledResend}
                         disabled={loading || timer > 0}
                     >
                         {timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}

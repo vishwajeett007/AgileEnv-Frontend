@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
 import { toast } from "sonner";
+import { useThrottle } from "@/hooks/use-throttle";
 
 export const LoginForm = () => {
     const router = useRouter();
@@ -57,6 +58,8 @@ export const LoginForm = () => {
         }
     };
 
+    const throttledSubmit = useThrottle(onSubmit, 2000);
+
     return (
         <CardWrapper
             headerLabel="Welcome Back"
@@ -68,7 +71,7 @@ export const LoginForm = () => {
                 Do not have an account? <Link href="/sign-up" className="text-[#0057E5] hover:underline">Sign up</Link>
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
