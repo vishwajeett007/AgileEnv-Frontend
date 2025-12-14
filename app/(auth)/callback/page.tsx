@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, Suspense, useRef } from "react";
 import { googleCallback, githubCallback } from "@/actions/auth";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const CallbackContent = () => {
     const router = useRouter();
@@ -75,6 +76,7 @@ const CallbackContent = () => {
         <div className="flex flex-col items-center justify-center gap-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
             <p>Completing secure sign in...</p>
+            <Button onClick={() => router.push("/login")}>Back to Login</Button>
         </div>
     );
 };
