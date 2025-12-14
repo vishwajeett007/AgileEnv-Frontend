@@ -19,7 +19,7 @@ export const removeAuthCookie = async (name: string) => {
     cookieStore.delete(name);
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL1;
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
