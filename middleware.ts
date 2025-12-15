@@ -4,6 +4,11 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    const deleteAloowed = () => {
+        request.cookies.delete("otpAllowed");
+        request.cookies.delete("otpAllowedForget");
+    }
+
     const isLoggedIn = request.cookies.get("access_token")?.value;
     if (pathname.startsWith("/dashboard")) {
         if (!isLoggedIn) {
@@ -32,9 +37,16 @@ export function middleware(request: NextRequest) {
         }
     }
 
+    if (!(pathname === "/verify-otp")) {
+        deleteAloowed();
+    }
+    if (!(pathname === "/verify-email")) {
+        deleteAloowed();
+    }
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/dashboard", "/reset-password", "/verify-email", "/verify-otp"],
+    matcher: ["/dashboard", "/reset-password", "/verify-email", "/verify-otp", "/login", "/sign-up", "/forgot-password", "/"],
 };

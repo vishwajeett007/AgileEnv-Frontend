@@ -28,6 +28,7 @@ export const RegisterForm = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
     const [loading, setLoading] = useState(false);
 
@@ -126,6 +127,8 @@ export const RegisterForm = () => {
                                             type={showPassword ? "text" : "password"}
                                             className="h-10 border-0 bg-gray-100 pr-10"
                                             disabled={loading}
+                                            onFocus={() => setIsPasswordFocused(true)}
+                                            onBlur={() => setIsPasswordFocused(false)}
                                         />
                                     </FormControl>
                                     <button
@@ -135,6 +138,20 @@ export const RegisterForm = () => {
                                     >
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
+                                    {isPasswordFocused && (
+                                        <div className="absolute z-10 w-full mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-xl text-sm text-gray-600 top-full left-0 animate-in fade-in zoom-in-95 duration-200">
+                                            {/* Tooltip Arrow */}
+                                            <div className="absolute -top-2 left-4 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45"></div>
+
+                                            <h4 className="font-semibold mb-2 text-gray-900">Password Requirements</h4>
+                                            <ul className="list-disc pl-5 space-y-1 text-xs">
+                                                <li>Password must contain 6 characters</li>
+                                                <li>Include at least one uppercase letter (A-Z).</li>
+                                                <li>Include at least one number (0-9).</li>
+                                                <li>Include at least one special character.</li>
+                                            </ul>
+                                        </div>
+                                    )}
                                 </div>
                                 <FormMessage />
                             </FormItem>

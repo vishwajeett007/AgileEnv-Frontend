@@ -23,8 +23,8 @@ export const RegisterSchema = z.object({
     email: z.string().trim().email({
         message: "Email is required",
     }).regex(noEmojiRegex, emojiError),
-    password: z.string().trim().min(8, {
-        message: "Minimum 8 characters required",
+    password: z.string().trim().min(6, {
+        message: "Minimum 6 characters required",
     }).regex(new RegExp(".*[A-Z].*"), "One uppercase character")
         .regex(new RegExp(".*[0-9].*"), "One number")
         .regex(new RegExp(".*[^a-zA-Z0-9].*"), "One special character")

@@ -48,6 +48,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
         const data = await response.json();
         const remember = !!rememberMe;
+        const cookieStore = await cookies();
+        cookieStore.delete("otpAllowed")
+        cookieStore.delete("otpAllowedForget")
 
         await setAuthCookie("access_token", data.access_token, remember, 60 * 60 * 24);
         await setAuthCookie("refresh_token", data.refresh_token, remember, 60 * 60 * 24 * 7);
@@ -171,8 +174,6 @@ export const verifyRegistration = async (email: string, otp_code: string) => {
         }
 
         const data = await response.json();
-        const cookieStore = await cookies();
-        cookieStore.delete("otpAllowed")
         return { success: "Verified!", data };
     } catch (error) {
         return { error: "Something went wrong!" };
@@ -222,8 +223,6 @@ export const resetPassword = async (values: z.infer<typeof VerifySchema>) => {
         }
 
         const data = await response.json();
-        const cookieStore = await cookies();
-        cookieStore.delete("otpAllowedForget")
         return { success: "Verified!", data };
     }
     catch (error) {
