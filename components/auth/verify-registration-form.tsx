@@ -167,7 +167,7 @@ export const VerifyRegistrationForm = () => {
                                 onPaste={handlePaste}
                                 disabled={loading}
                                 autoFocus={index === 0}
-                                className="h-12 w-12 rounded-lg bg-gray-200 text-center text-xl font-semibold text-gray-900 outline outline-1 outline-blue-500 outline-solid focus:ring-2 focus:ring-[#0057E5]"
+                                className=" h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-gray-200 text-center text-xl font-semibold text-gray-900 outline outline-1 outline-blue-500 outline-solid focus:ring-2 focus:ring-[#0057E5]"
                             />
                         ))}
                     </div>

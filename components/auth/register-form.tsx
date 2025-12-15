@@ -74,7 +74,7 @@ export const RegisterForm = () => {
                 Already have an account? <Link href="/login" className="text-blue-600 hover:underline">log in</Link>
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-5">
+                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-4">
                     <FormField
                         control={form.control}
                         name="username"
