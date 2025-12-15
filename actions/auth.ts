@@ -95,6 +95,7 @@ export const refreshAuthToken = async () => {
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const validatedFields = RegisterSchema.safeParse(values);
 
+
     if (!validatedFields.success) {
         return { error: "Invalid fields!" };
     }
@@ -118,7 +119,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
             return { error: "Registration failed!" };
         }
 
-        // Return email to redirect
+        const cookieStore = await cookies();
+        cookieStore.set("otpAllowed", "true", { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 5 });
+
         return { success: "Registration successful!", email: payload.email };
     } catch (error) {
         return { error: "Something went wrong!" };
@@ -143,6 +146,8 @@ export const forgotPassword = async (values: z.infer<typeof ResetSchema>) => {
             return { error: "Failed to send reset email!" };
         }
 
+        const cookieStore = await cookies();
+        cookieStore.set("otpAllowedForget", "true", { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 5 });
         return { success: "Reset email sent!" };
     } catch (error) {
         return { error: "Something went wrong!" };
@@ -166,6 +171,8 @@ export const verifyRegistration = async (email: string, otp_code: string) => {
         }
 
         const data = await response.json();
+        const cookieStore = await cookies();
+        cookieStore.delete("otpAllowed")
         return { success: "Verified!", data };
     } catch (error) {
         return { error: "Something went wrong!" };
@@ -215,6 +222,8 @@ export const resetPassword = async (values: z.infer<typeof VerifySchema>) => {
         }
 
         const data = await response.json();
+        const cookieStore = await cookies();
+        cookieStore.delete("otpAllowedForget")
         return { success: "Verified!", data };
     }
     catch (error) {
