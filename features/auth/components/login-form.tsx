@@ -77,7 +77,7 @@ export const LoginForm = () => {
                             control={form.control}
                             name="email"
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem id="email-item">
                                     <FormLabel className="text-base font-medium text-gray-900">Username or Email Id</FormLabel>
                                     <FormControl>
                                         <Input
@@ -96,7 +96,7 @@ export const LoginForm = () => {
                             control={form.control}
                             name="password"
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem id="password-item">
                                     <FormLabel className="text-base font-medium text-gray-900">Password</FormLabel>
                                     <div className="relative">
                                         <FormControl>
@@ -127,7 +127,7 @@ export const LoginForm = () => {
                             control={form.control}
                             name="rememberMe"
                             render={({ field }) => (
-                                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                <FormItem id="remember-me-item" className="flex flex-row items-center space-x-2 space-y-0">
                                     <FormControl>
                                         <Checkbox
                                             id="remember"
