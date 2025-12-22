@@ -4,8 +4,14 @@ import * as z from "zod";
 import { RegisterSchema, LoginSchema, ResetSchema, VerifySchema, ResetCompleteSchema } from "@/features/auth/schemas";
 import { cookies } from "next/headers";
 
-const setAuthCookie = async (name: string, value: string, remember: boolean, maxAgeSeconds: number = 24 * 60 * 60) => {
-    const cookieStore = await cookies();
+const setAuthCookie = async (
+    name: string,
+    value: string,
+    remember: boolean,
+    maxAgeSeconds: number = 24 * 60 * 60,
+    cookieStoreParam?: any // Use the store if provided
+) => {
+    const cookieStore = cookieStoreParam || await cookies();
     cookieStore.set(name, value, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -14,11 +20,9 @@ const setAuthCookie = async (name: string, value: string, remember: boolean, max
     });
 };
 
-export const removeAuthCookie = async (name: string, name1: string, name2: string) => {
+export const removeAuthCookie = async (...names: string[]) => {
     const cookieStore = await cookies();
-    cookieStore.delete(name);
-    cookieStore.delete(name1);
-    cookieStore.delete(name2);
+    names.forEach(name => cookieStore.delete(name));
 }
 // const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const API_URL = process.env.NEXT_PUBLIC_API_URL1;
@@ -49,12 +53,16 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         const data = await response.json();
         const remember = !!rememberMe;
         const cookieStore = await cookies();
+
         cookieStore.delete("otpAllowed")
         cookieStore.delete("otpAllowedForget")
 
-        await setAuthCookie("access_token", data.access_token, remember, 60 * 60 * 24);
-        await setAuthCookie("refresh_token", data.refresh_token, remember, 60 * 60 * 24 * 7);
-        await setAuthCookie("user", JSON.stringify(data.user), remember, 60 * 60 * 24 * 7);
+        // Reuse cookieStore to avoid multiple await cookies() calls
+        await Promise.all([
+            setAuthCookie("access_token", data.access_token, remember, 60 * 60 * 24, cookieStore),
+            setAuthCookie("refresh_token", data.refresh_token, remember, 60 * 60 * 24 * 7, cookieStore),
+            setAuthCookie("user", JSON.stringify(data.user), remember, 60 * 60 * 24 * 7, cookieStore)
+        ]);
 
         return { success: "Login successful!", data };
     } catch (error) {
@@ -296,9 +304,13 @@ export const googleCallback = async (code: string, state: string) => {
         const accessToken = data.access_token;
         const refreshToken = data.refresh_token;
         const user = data.user;
-        await setAuthCookie("access_token", accessToken, true, 60 * 60 * 24);
-        await setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7);
-        await setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7);
+
+        const cookieStore = await cookies();
+        await Promise.all([
+            setAuthCookie("access_token", accessToken, true, 60 * 60 * 24, cookieStore),
+            setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7, cookieStore),
+            setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7, cookieStore)
+        ]);
 
         return { success: "Logged In!", accessToken, refreshToken, user };
     }
@@ -347,9 +359,13 @@ export const githubCallback = async (code: string, state: string) => {
         const accessToken = data.access_token;
         const refreshToken = data.refresh_token;
         const user = data.user;
-        await setAuthCookie("access_token", accessToken, true, 60 * 60 * 24);
-        await setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7);
-        await setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7);
+
+        const cookieStore = await cookies();
+        await Promise.all([
+            setAuthCookie("access_token", accessToken, true, 60 * 60 * 24, cookieStore),
+            setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7, cookieStore),
+            setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7, cookieStore)
+        ]);
 
         return { success: "Logged In!", accessToken, refreshToken, user };
     }

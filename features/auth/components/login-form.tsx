@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CardWrapper } from "@/features/auth/components/card-wrapper";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/actions/auth";
@@ -39,7 +39,7 @@ export const LoginForm = () => {
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = useCallback(async (values: z.infer<typeof LoginSchema>) => {
         setLoading(true);
         try {
             const data = await login(values);
@@ -56,9 +56,9 @@ export const LoginForm = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [router]);
 
-    const throttledSubmit = useThrottle(onSubmit, 2000);
+    const throttledSubmit = useThrottle(onSubmit, 1000);
 
     return (
         <CardWrapper
