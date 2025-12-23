@@ -79,7 +79,7 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
 
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full items-center">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-12 w-full items-center">
             <div className="flex justify-center perspective">
                 <div
                     className={cn(
@@ -103,20 +103,20 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
                     <Image
                         src="/Images/logo.svg"
                         alt="logo"
-                        width={60}
-                        height={60}
+                        width={45}
+                        height={45}
                     />
-                    <h2 className="text-3xl font-medium text-blue-600 pb-1">Agile</h2>
+                    <h2 className="text-2xl font-medium text-blue-600 pb-1">Agile</h2>
                 </div>
 
-                <div className="flex flex-col gap-3 py-4 items-center justify-center">
-                    <h1 className="font-medium text-2xl text-left">Pick the tools you want <br /> in your workspace</h1>
-                    <p className="text-left text-md tracking-[0.02rem] text-muted-foreground font-roboto">
+                <div className="flex flex-col gap-2 py-3 items-center justify-center">
+                    <h1 className="font-medium text-xl text-left leading-tight">Pick the tools you want <br /> in your workspace</h1>
+                    <p className="text-left text-sm tracking-[0.02rem] text-muted-foreground font-roboto">
                         Select the features you’ll use most. You can always add more later.
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                     {TOOLS.map((tool) => {
                         const checked = selectedTools.includes(tool.id)
                         return (
@@ -125,7 +125,7 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
                                 type="button"
                                 onClick={() => toggleTool(tool.id)}
                                 className={cn(
-                                    "flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all",
+                                    "w-full flex items-center gap-3 rounded-lg border px-4 py-2 text-left transition-all",
                                     checked
                                         ? "border-blue-600 bg-blue-50"
                                         : "border-gray-300 hover:border-blue-400"
@@ -149,14 +149,14 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
                     })}
                 </div>
 
-                <div className="flex items-center mt-3 justify-center gap-2">
+                <div className="flex items-center mt-2 justify-center gap-2">
                     <Button
-                        className="flex-1 hover:bg-gray-100 bg-transparent py-6 text-lg text-blue-700 font-light border border-blue-700 border-2"
+                        className="flex-1 hover:bg-gray-100 bg-transparent py-4 text-lg text-blue-700 font-light border border-blue-700 border-2"
                         onClick={onBack}>
                         Back
                     </Button>
                     <Button
-                        className="flex-1 hover:bg-blue-800 bg-blue-700 py-6 text-lg text-white font-light border border-blue-700 border-2"
+                        className="flex-1 hover:bg-blue-800 bg-blue-700 py-4 text-lg text-white font-light border border-blue-700 border-2"
                         onClick={handleNext} disabled={selectedTools.length === 0}>
                         Continue
                     </Button>

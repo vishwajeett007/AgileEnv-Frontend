@@ -5,19 +5,24 @@ import { WorkspaceStepName } from "./steps/workspaceName-step"
 import { WorkspaceStepWork } from "./steps/work-option"
 import { WorkspaceStepFeature } from "./steps/feature-option"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 type OnboardingData = {
     workspaceName: string
 }
 
-export default function OnboardingWizard() {
-    const [step, setStep] = useState(0)
+interface OnboardingWizardProps {
+    step: number;
+    onStepChange: (step: number) => void;
+}
+
+export default function OnboardingWizard({ step, onStepChange }: OnboardingWizardProps) {
     const [data, setData] = useState<OnboardingData>({
         workspaceName: "",
     })
 
-    const nextStep = () => setStep((prev) => prev + 1)
-    const prevStep = () => setStep((prev) => prev - 1)
+    const nextStep = () => onStepChange(step + 1)
+    const prevStep = () => onStepChange(step - 1)
 
     const updateData = (newData: Partial<OnboardingData>) => {
         setData((prev) => ({ ...prev, ...newData }))
@@ -29,7 +34,10 @@ export default function OnboardingWizard() {
     }
 
     return (
-        <div className="w-full sm:px-[6rem] pb-[3rem] pt-[2rem]">
+        <div className={cn(
+            "w-full pb-[3rem] pt-[2rem]",
+            step === 2 ? "sm:px-[6rem]" : "px-6"
+        )}>
 
             {step === 0 && (
                 <WorkspaceStepName

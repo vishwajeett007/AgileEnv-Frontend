@@ -20,7 +20,7 @@ export function WorkspaceStepName({ onNext, initialData }: WorkspaceStepProps) {
     }
 
     return (
-        <div className="flex flex-col gap-6 lg:max-w-[46rem]">
+        <div className="flex flex-col gap-6 px-10">
             {/* <div className="flex flex-col gap-4"> */}
             <div className="flex items-center justify-center gap-1">
                 <Image
