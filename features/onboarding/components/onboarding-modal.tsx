@@ -30,7 +30,7 @@ export default function WorkSpaceSetUp() {
             </DialogTrigger>
             <DialogPortal>
                 <DialogContent className={cn(
-                    "w-full transition-all duration-300 lg:max-w-[46rem] xl:max-w-[45rem] px-16",
+                    "w-full transition-all duration-300 lg:max-w-[46rem] xl:max-w-[45rem]  lg:px-16",
                     step === 2 ? "p-1 lg:max-w-[64rem] xl:max-w-[64rem]" : "lg:max-w-[32rem]"
                 )}
                     showCloseButton={false}

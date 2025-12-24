@@ -4,7 +4,6 @@ import { useState } from "react"
 import { WorkspaceStepName } from "./steps/workspaceName-step"
 import { WorkspaceStepWork } from "./steps/work-option"
 import { WorkspaceStepFeature } from "./steps/feature-option"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 type OnboardingData = {
@@ -35,7 +34,7 @@ export default function OnboardingWizard({ step, onStepChange }: OnboardingWizar
 
     return (
         <div className={cn(
-            "w-full pb-[3rem] pt-[2rem]",
+            "w-full pb-[3rem] pt-[2rem] px-1",
             step === 2 ? "sm:px-[6rem]" : "px-1"
         )}>
 
