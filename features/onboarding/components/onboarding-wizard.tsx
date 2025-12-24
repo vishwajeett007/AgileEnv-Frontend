@@ -36,7 +36,7 @@ export default function OnboardingWizard({ step, onStepChange }: OnboardingWizar
     return (
         <div className={cn(
             "w-full pb-[3rem] pt-[2rem]",
-            step === 2 ? "sm:px-[6rem]" : "px-6"
+            step === 2 ? "sm:px-[6rem]" : "px-1"
         )}>
 
             {step === 0 && (
