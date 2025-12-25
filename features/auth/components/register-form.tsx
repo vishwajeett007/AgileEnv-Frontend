@@ -67,12 +67,10 @@ export const RegisterForm = () => {
     return (
         <CardWrapper
             headerLabel="Create an account"
-            backButtonLabel="Already have an account?"
-            backButtonHref="/login"
             showSocial
         >
-            <div className="mb-4 text-center text-sm text-gray-500">
-                Already have an account? <Link href="/login" className="text-blue-600 hover:underline">log in</Link>
+            <div className="mb-4 text-center text-base text-gray-500">
+                Already have an account? <Link href="/login" className="text-blue-600 underline">log in</Link>
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-4">

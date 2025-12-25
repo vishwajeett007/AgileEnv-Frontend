@@ -76,11 +76,9 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
         setFlipped((prev) => !prev)
     }
 
-
-
     return (
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-12 w-full items-center">
-            <div className="flex justify-center perspective">
+            <div className="hidden md:visible flex justify-center perspective">
                 <div
                     className={cn(
                         "relative transition-transform duration-700 ease-in-out transform-style-preserve-3d",

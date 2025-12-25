@@ -4,6 +4,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResetSchema } from "@/features/auth/schemas";
+import { toast } from "sonner";
 import {
     Form,
     FormControl,
@@ -40,15 +41,16 @@ export const ForgotPasswordForm = () => {
             if (res.success) {
                 router.push(`/verify-otp?email=${values.email}`);
             } else {
-                console.error(res.error || "Failed to send reset email");
+                toast.error(res.error || "Failed to send reset email");
             }
         } catch (error) {
+            toast.error("Error sending reset email");
             console.error("Error sending reset email", error);
         } finally {
             setLoading(false);
         }
     };
-    const throttledSubmit = useThrottle(onSubmit, 2000);
+    // const throttledSubmit = useThrottle(onSubmit, 2000);
     return (
         <CardWrapper
             headerLabel="Forgot Password"
@@ -59,7 +61,7 @@ export const ForgotPasswordForm = () => {
                 Please enter your registered email to receive a verification code.
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}

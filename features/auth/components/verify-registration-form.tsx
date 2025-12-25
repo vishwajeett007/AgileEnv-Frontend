@@ -5,14 +5,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyRegistration, resendRegistrationOtp } from "@/features/auth/actions/auth";
 import { useEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
-import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useThrottle } from "@/hooks/use-throttle";
 import { CardWrapper } from "./card-wrapper";
 
 export const VerifyRegistrationForm = () => {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
 

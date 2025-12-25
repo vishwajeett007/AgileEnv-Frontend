@@ -31,8 +31,8 @@ export default function AuthLayout({
                     />
                 </div>
 
-                <div className="text-center">
-                    <p className="text-lg font-medium text-gray-900">
+                <div className="text-center pb-5">
+                    <p className="text-2xl font-semibold text-[#2F3A4A] leading-snug">
                         Coordinate with your team, share updates, and keep everyone aligned in
                         a space built for clear, connected work.
                     </p>

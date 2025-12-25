@@ -63,12 +63,10 @@ export const LoginForm = () => {
     return (
         <CardWrapper
             headerLabel="Welcome Back"
-            backButtonLabel="Don't have an account?"
-            backButtonHref="/sign-up"
             showSocial
         >
-            <div className="mb-6 text-center text-sm text-gray-600">
-                Do not have an account? <Link href="/sign-up" className="text-[#0057E5] hover:underline">Sign up</Link>
+            <div className="mb-6 text-center text-base text-gray-600">
+                Do not have an account? <Link href="/sign-up" className="text-[#0057E5] underline">Sign up</Link>
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(throttledSubmit)} className="space-y-6">
