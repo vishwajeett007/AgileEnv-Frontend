@@ -257,7 +257,12 @@ export const resetPassword = async (values: z.infer<typeof VerifySchema>) => {
             }),
         });
         if (!response.ok) {
-            return { error: "Failed to Verify OTP!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to Verify OTP!" };
+            } catch {
+                return { error: "Failed to Verify OTP!" };
+            }
         }
 
         const data = await response.json();
@@ -286,7 +291,12 @@ export const completeReset = async (values: z.infer<typeof ResetCompleteSchema>)
             })
         });
         if (!response.ok) {
-            return { error: "Failed to Verify OTP!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to Verify OTP!" };
+            } catch {
+                return { error: "Failed to Verify OTP!" };
+            }
         }
         return { success: "Verified!" };
     }
@@ -302,7 +312,12 @@ export const googleRedirect = async () => {
             headers: { "Content-Type": "application/json" },
         });
         if (!response.ok) {
-            return { error: "Failed to Redirect!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to Redirect!" };
+            } catch {
+                return { error: "Failed to Redirect!" };
+            }
         }
 
         const data = await response.json();
@@ -357,7 +372,12 @@ export const githubRedirect = async () => {
             headers: { "Content-Type": "application/json" },
         });
         if (!response.ok) {
-            return { error: "Failed to Redirect!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to Redirect!" };
+            } catch {
+                return { error: "Failed to Redirect!" };
+            }
         }
 
         const data = await response.json();
