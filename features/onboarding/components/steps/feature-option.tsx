@@ -78,11 +78,11 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-12 w-full items-center">
-            <div className="hidden md:visible flex justify-center perspective">
+            <div className="hidden md:flex justify-center perspective">
                 <div
                     className={cn(
-                        "relative transition-transform duration-700 ease-in-out transform-style-preserve-3d",
-                        flipped && "rotate-y-180"
+                        "relative transition-all duration-500 ease-in-out",
+                        flipped ? "scale-105 opacity-90" : "scale-100 opacity-100"
                     )}
                 >
                     <Image
@@ -91,7 +91,7 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
                         alt={activeTool}
                         width={420}
                         height={320}
-                        className="backface-hidden"
+                        className="rounded-xl shadow-2xl border border-gray-100 bg-white"
                     />
                 </div>
             </div>
