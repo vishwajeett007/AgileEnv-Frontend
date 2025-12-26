@@ -47,7 +47,12 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         });
 
         if (!response.ok) {
-            return { error: "Invalid credentials!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Invalid credentials!" };
+            } catch {
+                return { error: "Invalid credentials!" };
+            }
         }
 
         const data = await response.json();
@@ -87,7 +92,12 @@ export const refreshAuthToken = async () => {
         });
 
         if (!response.ok) {
-            return { error: "Failed to refresh token" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to refresh token" };
+            } catch {
+                return { error: "Failed to refresh token" };
+            }
         }
 
         const data = await response.json();
@@ -127,7 +137,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         });
 
         if (!response.ok) {
-            return { error: "Registration failed!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Registration failed!" };
+            } catch {
+                return { error: "Registration failed!" };
+            }
         }
 
         const cookieStore = await cookies();
@@ -154,7 +169,12 @@ export const forgotPassword = async (values: z.infer<typeof ResetSchema>) => {
         });
 
         if (!response.ok) {
-            return { error: "Failed to send reset email!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to send reset email!" };
+            } catch {
+                return { error: "Failed to send reset email!" };
+            }
         }
 
         const cookieStore = await cookies();
@@ -178,7 +198,12 @@ export const verifyRegistration = async (email: string, otp_code: string) => {
         });
 
         if (!response.ok) {
-            return { error: "Verification failed!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Verification failed!" };
+            } catch {
+                return { error: "Verification failed!" };
+            }
         }
 
         const data = await response.json();
@@ -200,7 +225,12 @@ export const resendRegistrationOtp = async (email: string) => {
         });
 
         if (!response.ok) {
-            return { error: "Failed to resend OTP!" };
+            try {
+                const errorData = await response.json();
+                return { error: errorData.error || errorData.message || errorData.detail || "Failed to resend OTP!" };
+            } catch {
+                return { error: "Failed to resend OTP!" };
+            }
         }
 
         return { success: "OTP resent!" };
