@@ -1,21 +1,23 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
+import { setWorkspaceName } from "@/lib/features/onboarding/onboarding-Slice"
 
 interface WorkspaceStepProps {
-    onNext: (data: { name: string }) => void
-    initialData?: { name: string }
+    onNext: () => void
 }
 
-export function WorkspaceStepName({ onNext, initialData }: WorkspaceStepProps) {
-    const [name, setName] = useState(initialData?.name || "")
+export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
+
+    const dispatch = useAppDispatch();
+    const { workspaceName } = useAppSelector((state) => state.onboarding)
 
     const handleNext = () => {
-        if (name.trim()) {
-            onNext({ name })
+        if (workspaceName.trim()) {
+            onNext()
         }
     }
 
@@ -43,8 +45,8 @@ export function WorkspaceStepName({ onNext, initialData }: WorkspaceStepProps) {
                 <Input
                     id="workspace-name"
                     placeholder="Workspace Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={workspaceName}
+                    onChange={(e) => dispatch(setWorkspaceName(e.target.value))}
                     className="h-12 px-5 bg-gray-100 placeholder:text-gray-400"
                     autoFocus
                 />
@@ -56,7 +58,7 @@ export function WorkspaceStepName({ onNext, initialData }: WorkspaceStepProps) {
             <div className="flex items-center justify-center">
                 <Button
                     className="w-full hover:bg-blue-800 bg-blue-700 py-6 text-lg text-white font-light"
-                    onClick={handleNext} disabled={!name.trim()}>
+                    onClick={handleNext} disabled={!workspaceName.trim()}>
                     Continue
                 </Button>
             </div>

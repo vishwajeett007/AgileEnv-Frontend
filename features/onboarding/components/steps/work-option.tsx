@@ -4,22 +4,19 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { setWorkspaceRole } from "@/lib/features/onboarding/onboarding-Slice"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 
 interface WorkspaceStepProps {
-    onNext: (data: { name: string }) => void
+    onNext: () => void
     onBack: () => void
-    initialData?: { name: string }
 }
 
-export function WorkspaceStepWork({ onNext, onBack, initialData }: WorkspaceStepProps) {
-    const [name, setName] = useState(initialData?.name || "")
-    const [selected, setSelected] = useState<string | null>(null)
+export function WorkspaceStepWork({ onNext, onBack }: WorkspaceStepProps) {
+    const dispatch = useAppDispatch()
+    const { workspaceRole } = useAppSelector((state) => state.onboarding)
 
-    const handleNext = () => {
-        if (name.trim()) {
-            onNext({ name })
-        }
-    }
+
     const WORK_MODES = [
         { id: "projects", label: "Plan Projects", link: "/Images/ChartBar.svg", active: "/Images/ChartBar1.svg" },
         { id: "sprints", label: "Run Sprints", link: "/Images/kanban.svg", active: "/Images/kanban1.svg" },
@@ -28,16 +25,9 @@ export function WorkspaceStepWork({ onNext, onBack, initialData }: WorkspaceStep
     ] as const
 
     const handleOption = (mode: typeof WORK_MODES[number]) => {
-        setSelected(mode.id)
-        localStorage.setItem("work_mode", mode.id)
+        dispatch(setWorkspaceRole(mode.id))
     }
-    useEffect(() => {
-        const workMode = localStorage.getItem("work_mode")
-        if (workMode) {
-            setSelected(workMode)
-        }
-    }, []
-    )
+
     return (
         <div className="flex flex-col gap-6 ">
 
@@ -66,19 +56,19 @@ export function WorkspaceStepWork({ onNext, onBack, initialData }: WorkspaceStep
                         onClick={() => handleOption(mode)}
                         className={cn(
                             "flex items-center gap-3 rounded-lg border p-3 text-left transition-all duration-300 ease-out",
-                            selected === mode.id
+                            workspaceRole === mode.id
                                 ? "border-blue-500 border-2 scale-105 bg-blue-50"
                                 : "border-gray-400 hover:scale-105 hover:border-blue-400"
                         )}
                     >
                         <Image
-                            src={selected === mode.id ? mode.active : mode.link}
+                            src={workspaceRole === mode.id ? mode.active : mode.link}
                             alt={mode.id}
                             height={30}
                             width={30}
                             className={cn(
                                 "transistion-transform duration-300",
-                                selected === mode.id && "scale-110"
+                                workspaceRole === mode.id && "scale-110"
                             )}
                         />
                         <span className="font-medium text-gray-700">{mode.label}</span>
@@ -95,7 +85,7 @@ export function WorkspaceStepWork({ onNext, onBack, initialData }: WorkspaceStep
                 </Button>
                 <Button
                     className="flex-1 hover:bg-blue-800 bg-blue-700 py-6 text-lg text-white font-light border border-2 border-blue-700"
-                    onClick={handleNext} disabled={!selected}>
+                    onClick={onNext} disabled={!workspaceRole}>
                     Continue
                 </Button>
             </div>

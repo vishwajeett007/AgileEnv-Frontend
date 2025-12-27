@@ -5,26 +5,20 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { setSelectedTools, setActiveTool } from "@/lib/features/onboarding/onboarding-Slice"
+import { setSelectedTools, setActiveTool, resetOnboarding } from "@/lib/features/onboarding/onboarding-Slice"
+import { DialogClose } from "@radix-ui/react-dialog"
+
 
 interface WorkspaceStepProps {
-    onNext: (data: { name: string }) => void
     onBack: () => void
-    initialData?: { name: string }
 }
 
-export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceStepProps) {
+export function WorkspaceStepFeature({ onBack }: WorkspaceStepProps) {
     const dispatch = useAppDispatch()
-    const { selectedTools, activeTool } = useAppSelector((state) => state.onboarding)
-    const [name, setName] = useState(initialData?.name || "")
+    const { selectedTools, activeTool, } = useAppSelector((state) => state.onboarding)
     const [flipped, setFlipped] = useState(false)
 
 
-    const handleNext = () => {
-        if (name.trim()) {
-            onNext({ name })
-        }
-    }
     const TOOLS = [
         { id: "Kanban", label: "Kanban Board" },
         { id: "Calendar", label: "Calendar" },
@@ -62,6 +56,10 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
         dispatch(setSelectedTools(nextTools))
         dispatch(setActiveTool(nextActive))
         setFlipped((prev) => !prev)
+    }
+
+    const onFinish = () => {
+        dispatch(resetOnboarding())
     }
 
     return (
@@ -137,15 +135,16 @@ export function WorkspaceStepFeature({ onNext, onBack, initialData }: WorkspaceS
 
                 <div className="flex items-center mt-2 justify-center gap-2">
                     <Button
-                        className="flex-1 hover:bg-gray-100 bg-transparent py-4 text-lg text-blue-700 font-light border border-blue-700 border-2"
+                        className="flex-1 hover:bg-gray-100 bg-transparent py-4 text-lg text-blue-700 font-light border border-blue-700 border-2 m-0"
                         onClick={onBack}>
                         Back
                     </Button>
-                    <Button
-                        className="flex-1 hover:bg-blue-800 bg-blue-700 py-4 text-lg text-white font-light border border-blue-700 border-2"
-                        onClick={handleNext} disabled={selectedTools.length === 0}>
-                        Continue
-                    </Button>
+                    <DialogClose
+                        className="flex-1 hover:bg-blue-800 bg-blue-700 text-lg text-white font-light border border-blue-700 border-3 rounded-lg h-9 text-center px-2 m-0"
+                        onClick={onFinish} >
+                        Finish
+                    </DialogClose>
+
                 </div>
             </div>
         </div>

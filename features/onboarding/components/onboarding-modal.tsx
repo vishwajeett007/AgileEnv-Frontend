@@ -33,7 +33,9 @@ export default function WorkSpaceSetUp() {
                     "w-full transition-all duration-300 lg:max-w-[46rem] xl:max-w-[45rem]  lg:px-16",
                     step === 2 ? "p-1 lg:max-w-[64rem] xl:max-w-[64rem]" : "lg:max-w-[32rem]"
                 )}
-                    showCloseButton={false}
+                    showCloseButton={true}//change it later
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
                 >
                     <DialogHeader>
                         <DialogTitle><VisuallyHidden>WorkSpace Setup</VisuallyHidden></DialogTitle>

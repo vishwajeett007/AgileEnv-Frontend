@@ -51,7 +51,6 @@ export const LoginForm = () => {
                 toast.success("Login successful");
                 dispatch(setCredentials({
                     user: data.data.user,
-                    token: data.data.access_token
                 }));
                 router.push("/dashboard");
             } else {
