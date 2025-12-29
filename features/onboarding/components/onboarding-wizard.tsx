@@ -1,10 +1,14 @@
 "use client"
 
-import { WorkspaceStepName } from "./steps/workspaceName-step"
-import { WorkspaceStepWork } from "./steps/work-option"
-import { WorkspaceStepFeature } from "./steps/feature-option"
+import { WorkspaceStepName } from "./Project-steps/workspaceName-step"
+import { WorkspaceStepWork } from "./Project-steps/work-option"
+import { WorkspaceStepFeature } from "./Project-steps/feature-option"
 import { cn } from "@/lib/utils"
 
+interface OnboardingWizardProps {
+    step: number;
+    onStepChange: (step: number) => void;
+}
 interface OnboardingWizardProps {
     step: number;
     onStepChange: (step: number) => void;

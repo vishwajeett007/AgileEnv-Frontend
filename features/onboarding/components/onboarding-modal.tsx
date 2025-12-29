@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
     Dialog,
     DialogContent,
@@ -16,12 +16,10 @@ import { cn } from "@/lib/utils";
 
 export default function WorkSpaceSetUp() {
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [step, setStep] = useState(0);
 
-    useEffect(() => {
-        setOpen(true)
-    }, [])
+
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
