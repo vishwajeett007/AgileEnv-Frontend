@@ -19,7 +19,6 @@ import { CardWrapper } from "@/features/auth/components/card-wrapper";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { forgotPassword } from "@/features/auth/actions/auth";
-import { useThrottle } from "@/hooks/use-throttle";
 
 export const ForgotPasswordForm = () => {
     const router = useRouter();

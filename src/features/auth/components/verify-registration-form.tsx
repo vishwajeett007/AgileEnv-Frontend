@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { verifyRegistration, resendRegistrationOtp } from "@/features/auth/actions/auth";
 import { useEffect, useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import Link from "next/link";
@@ -95,9 +95,9 @@ export const VerifyRegistrationForm = () => {
                 console.error(res.error || "Failed to resend OTP");
                 toast.error(res.error || "Failed to resend OTP");
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error resending otp", error);
-            toast.error(error || "Failed to resend OTP");
+            toast.error("Failed to resend OTP");
         }
     };
 

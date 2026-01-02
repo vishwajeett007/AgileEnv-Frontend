@@ -9,7 +9,7 @@ const setAuthCookie = async (
     value: string,
     remember: boolean,
     maxAgeSeconds: number = 24 * 60 * 60,
-    cookieStoreParam?: any
+    cookieStoreParam?: Awaited<ReturnType<typeof cookies>>
 ) => {
     const cookieStore = cookieStoreParam || await cookies();
     cookieStore.set(name, value, {
@@ -24,8 +24,7 @@ export const removeAuthCookie = async (...names: string[]) => {
     const cookieStore = await cookies();
     names.forEach(name => cookieStore.delete(name));
 }
-// const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_URL = process.env.NEXT_PUBLIC_API_URL1;
+const API_URL = process.env.NEXT_PUBLIC_API_URL1 || process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
@@ -71,15 +70,13 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
         return { success: "Login successful!", data };
     } catch (error) {
-        return { error: "Something went wrong!" };
+        return { error, message: "Something went wrong!" };
     }
 };
 
 export const refreshAuthToken = async () => {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refresh_token")?.value;
-    const accessToken = cookieStore.get("access_token")?.value;
-
     if (!refreshToken) {
         return { error: "No refresh token found" };
     }
@@ -95,8 +92,8 @@ export const refreshAuthToken = async () => {
             try {
                 const errorData = await response.json();
                 return { error: errorData.error || errorData.message || errorData.detail || "Failed to refresh token" };
-            } catch {
-                return { error: "Failed to refresh token" };
+            } catch (error) {
+                return { error, message: "Failed to refresh token" };
             }
         }
 

@@ -62,7 +62,7 @@ export const LoginForm = () => {
         } finally {
             setLoading(false);
         }
-    }, [router]);
+    }, [router, dispatch]);
 
     const throttledSubmit = useThrottle(onSubmit, 1000);
 
