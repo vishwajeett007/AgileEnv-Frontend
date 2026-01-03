@@ -72,12 +72,13 @@ const ProfileSetup = () => {
 
             </div>
 
-            <div className="col-span-1 flex flex-col items-center justify-center w-full h-full">
-                <div className='relative w-full h-full flex flex-col items-center justify-center'>
+            <div className={`col-span-1 w-full h-full`}>
+                <div className={`relative w-full h-full flex flex-col items-center ${step === 2 ? 'justify-center' : 'sm:justify-start justify-center'}`}>
 
-                    <div className='absolute top-5 left-5 rounded-full bg-gray-200 w-10 h-10 flex items-center justify-center'>
-                        <ArrowLeft className='text-gray-900' size={25} onClick={handleBack} />
+                    <div className='absolute top-2 left-2 sm:top-5 sm:left-5 rounded-full sm:bg-gray-200 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center'>
+                        <ArrowLeft className='text-gray-900 w-10 h-10 p-1 sm:p-2 cursor-pointer' onClick={handleBack} />
                     </div>
+
                     {step === 1 &&
                         <ProfilePhoto step={step} handleNext={handleNext} />
                     }

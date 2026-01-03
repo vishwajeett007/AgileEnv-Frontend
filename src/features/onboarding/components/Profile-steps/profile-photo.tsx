@@ -36,7 +36,7 @@ const ProfilePhoto = (props: { step: number; handleNext: () => void; }) => {
     ]
     return (
 
-        <div className='max-w-4xl xl:max-w-6xl flex flex-col items-center gap-8 p-10'>
+        <div className='max-w-4xl xl:max-w-6xl flex flex-col items-center gap-6 p-8 lg:p-12'>
 
             <div className='flex flex-col items-center gap-2'>
                 <h1 className='text-4xl xl:text-5xl font-medium text-gray-900 text-center'>Profile Photo</h1>
