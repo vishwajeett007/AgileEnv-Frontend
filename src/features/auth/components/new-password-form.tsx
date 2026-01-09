@@ -55,7 +55,8 @@ export const NewPasswordForm = () => {
                 setSuccess(true);
                 toast.success("Password reset successful!");
             } else {
-                toast.error(res.error || "Failed to reset password!");
+                const errorMessage = typeof res?.error === "string" ? res.error : "Failed to reset password!";
+                toast.error(errorMessage);
             }
         } catch (error) {
             console.error("Failed to reset password", error);

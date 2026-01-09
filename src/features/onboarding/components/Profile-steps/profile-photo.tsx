@@ -1,4 +1,3 @@
-import React from 'react'
 import Image from 'next/image'
 
 const ProfilePhoto = (props: { step: number; handleNext: () => void; }) => {
@@ -21,7 +20,7 @@ const ProfilePhoto = (props: { step: number; handleNext: () => void; }) => {
         '/Images/p0.svg',
         '/Images/p0.svg',
         '/Images/p0.svg',
-        '/Images/p0.svg',
+        '/Images/p0.svg', 
         '/Images/Plus.svg',
         // '/Images/p1.svg',
         // '/Images/p2.svg',

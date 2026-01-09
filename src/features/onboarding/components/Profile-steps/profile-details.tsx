@@ -22,7 +22,7 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     }
 
     return (
-        <div className='w-full flex flex-col items-center gap-8 px-5 sm:px-10 lg:px-30 xl:px-50'>
+        <div className='w-full flex flex-col items-center gap-8 px-5 sm:px-10 lg:px-30 xl:px-55'>
 
             <div className='flex flex-col items-center gap-2 mb-1'>
                 <h1 className='text-3xl xl:text-4xl font-medium text-gray-900 text-center'>Personal Details</h1>

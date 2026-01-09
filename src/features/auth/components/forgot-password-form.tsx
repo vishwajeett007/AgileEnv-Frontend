@@ -40,7 +40,8 @@ export const ForgotPasswordForm = () => {
             if (res.success) {
                 router.push(`/verify-otp?email=${values.email}`);
             } else {
-                toast.error(res.error || "Failed to send reset email");
+                const errorMessage = typeof res?.error === "string" ? res.error : "Failed to send reset email";
+                toast.error(errorMessage);
             }
         } catch (error) {
             toast.error("Error sending reset email");

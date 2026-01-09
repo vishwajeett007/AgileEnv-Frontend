@@ -24,7 +24,9 @@ export const removeAuthCookie = async (...names: string[]) => {
     const cookieStore = await cookies();
     names.forEach(name => cookieStore.delete(name));
 }
-const API_URL = process.env.NEXT_PUBLIC_API_URL1 || process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+// process.env.NEXT_PUBLIC_API_URL1 ||
+// process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
@@ -106,7 +108,7 @@ export const refreshAuthToken = async () => {
 
         return { success: "Token refreshed", accessToken: newAccessToken };
     } catch (error) {
-        return { error: "Something went wrong during refresh" };
+        return { error, message: "Something went wrong during refresh" };
     }
 };
 

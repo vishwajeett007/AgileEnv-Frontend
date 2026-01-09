@@ -51,8 +51,9 @@ export const RegisterForm = () => {
                 toast.success("Check your email for verification");
                 router.push(`/verify-email?email=${res.email}`);
             } else {
-                console.error(res.error || "Registration failed");
-                toast.error(res.error || "Registration failed");
+                const errorMessage = typeof res?.error === "string" ? res.error : "Registration failed";
+                console.error(errorMessage);
+                toast.error(errorMessage);
             }
         } catch (error) {
             console.error("Error submitting form", error);

@@ -54,8 +54,9 @@ export const LoginForm = () => {
                 }));
                 router.push("/dashboard");
             } else {
-                console.error(data?.error || "Login failed");
-                toast.error(data?.error || "Login failed");
+                const errorMessage = typeof data?.error === "string" ? data.error : "Login failed";
+                console.error(errorMessage);
+                toast.error(errorMessage);
             }
         } catch (error) {
             console.error("Error logging in", error);

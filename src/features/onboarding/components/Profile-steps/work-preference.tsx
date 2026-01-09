@@ -17,7 +17,7 @@ const WorkPreference = (props: { step: number; handleNext: () => void; }) => {
     }
 
     return (
-        <div className='w-full flex flex-col items-center justify-start gap-8 px-5 sm:mt-20 sm:px-10 lg:px-30 xl:px-50'>
+        <div className='w-full flex flex-col items-center justify-start gap-8 px-5 sm:mt-20 sm:px-10 lg:px-30 xl:px-40'>
 
             <div className='flex flex-col items-center gap-2 mb-1'>
                 <h1 className='text-3xl xl:text-4xl font-medium text-gray-900 text-center'>What Brings you here?</h1>
