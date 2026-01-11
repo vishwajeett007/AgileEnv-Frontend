@@ -38,6 +38,7 @@ const ProfileSetup = () => {
                     <p className="text-4xl font-medium text-blue-700">Agile</p>
                 </div>
 
+                {/* First */}
                 <div className="flex items-center gap-4 mt-10 w-full p-1">
                     <div className="rounded-full border border-3 border-blue-400 bg-white w-10 h-10 lg:w-12 lg:h-12 text-blue-700 flex items-center justify-center">1</div>
                     <div className="flex flex-col">
@@ -50,8 +51,9 @@ const ProfileSetup = () => {
                     <div className="h-10 w-1 bg-blue-300/60 ml-5 lg:ml-6 rounded-lg"></div>
                 </div>
 
+                {/* Second */}
                 <div className="flex items-center gap-4 w-full p-1">
-                    <div className="rounded-full border border-3 border-blue-400 bg-white w-10 h-10 lg:w-12 lg:h-12 text-blue-700 flex items-center justify-center">2</div>
+                    <div className="rounded-full border border-3 border-blue-400 bg-white w-10 h-10 lg:w-12 lg:h-12 text-blue-700 flex items-center justify-center ">2</div>
                     <div className="flex flex-col">
                         <p className="text-md fon-medium text-gray-600">Step 2</p>
                         <h1 className="text-md md:text-xl lg:text-2xl font-medium">Personal Details</h1>
@@ -62,6 +64,7 @@ const ProfileSetup = () => {
                     <div className="h-10 w-1 bg-blue-300/60 ml-5 lg:ml-6 rounded-lg"></div>
                 </div>
 
+                {/* third */}
                 <div className="flex items-center gap-4 w-full p-1">
                     <div className="rounded-full border border-3 border-blue-400 bg-white w-10 h-10 lg:w-12 lg:h-12 text-blue-700 flex items-center justify-center">3</div>
                     <div className="flex flex-col">

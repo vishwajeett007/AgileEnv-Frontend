@@ -72,9 +72,8 @@ export const VerifyRegistrationForm = () => {
                 setSuccess(true);
                 toast.success("Verification successful");
             } else {
-                const errorMessage = typeof data?.error === "string" ? data.error : "Verification failed";
-                console.error(errorMessage);
-                toast.error(errorMessage);
+                console.error(data.error || "Verification failed");
+                toast.error(data.error || "Verification failed");
             }
         } catch (error) {
             console.error("Error verifying otp", error);
@@ -93,9 +92,8 @@ export const VerifyRegistrationForm = () => {
             if (res.success) {
                 toast.success("OTP Resent");
             } else {
-                const errorMessage = typeof res?.error === "string" ? res.error : "Failed to resend OTP";
-                console.error(errorMessage);
-                toast.error(errorMessage);
+                console.error(res.error || "Failed to resend OTP");
+                toast.error(res.error || "Failed to resend OTP");
             }
         } catch (error) {
             console.error("Error resending otp", error);

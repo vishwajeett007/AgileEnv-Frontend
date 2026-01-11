@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     const { handleNext } = props;
 
@@ -12,6 +12,8 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
         "Designer",
         "Other",
     ]
+    const [fullname, setfullname] = useState("")
+    // const [work, setwork] = useState("")
 
     const handleSkip = () => {
         handleNext();
@@ -20,7 +22,7 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     const handleContinue = () => {
         handleNext();
     }
-
+    // console.log(fullname);
     return (
         <div className='w-full flex flex-col items-center gap-8 px-5 sm:px-10 lg:px-30 xl:px-55'>
 
@@ -37,6 +39,8 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
                 </label>
                 <input type="text"
                     id="name"
+                    value={fullname}
+                    onChange={(e) => { setfullname(e.target.value) }}
                     placeholder="Enter your full name"
                     className="w-full rounded-md p-3 bg-gray-100"
                 />

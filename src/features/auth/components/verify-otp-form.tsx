@@ -66,9 +66,8 @@ export const VerifyOtpForm = () => {
             const res = await forgotPassword({ email });
 
             if (!res.success) {
-                const errorMessage = typeof res?.error === "string" ? res.error : "Failed to resend OTP";
-                console.error(errorMessage);
-                toast.error(errorMessage);
+                console.error(res.error || "Failed to resend OTP");
+                toast.error(res.error || "Failed to resend OTP");
             } else {
                 toast.success("OTP resent successfully");
             }
@@ -88,9 +87,8 @@ export const VerifyOtpForm = () => {
                 toast.success("OTP verified successfully");
                 router.push(`/reset-password?token=${res.data.reset_token}`)
             } else {
-                const errorMessage = typeof res?.error === "string" ? res.error : "Verification Failed!";
-                console.error(errorMessage);
-                toast.error(errorMessage);
+                console.error(res.error || "Verification Failed!");
+                toast.error(res.error || "Verification Failed!");
             }
         } catch (error) {
             console.error("Error verifying OTP", error);
