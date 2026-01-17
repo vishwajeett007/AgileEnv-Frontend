@@ -3,7 +3,6 @@ import Image from 'next/image'
 const ProfilePhoto = (props:
      { step: number; 
        handleNext: () => void; 
-       handleSkip: () => void; 
     }) => {
 
     const { handleNext } = props;
