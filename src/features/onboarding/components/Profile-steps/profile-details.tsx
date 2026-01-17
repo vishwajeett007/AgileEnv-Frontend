@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setFullName, setProfileWorkRole } from "@/lib/features/onboarding/onboarding-Slice";
+
 const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     const { handleNext } = props;
+    const dispatch = useAppDispatch();
+    const {fullname, profileWorkRole} = useAppSelector((state) => state.onboarding);
 
     const work = [
         "Project Manager",
         "O/A Tester",
-        "Developer",
+        "Senior Manager",
         "Operations",
         "Developer",
-        "Designer",
-        "Designer",
+        "UI/UX Designer",
+        "Product Designer",
         "Other",
     ]
-    const [fullname, setfullname] = useState("")
-    // const [work, setwork] = useState("")
 
     const handleSkip = () => {
         handleNext();
@@ -40,7 +42,7 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
                 <input type="text"
                     id="name"
                     value={fullname}
-                    onChange={(e) => { setfullname(e.target.value) }}
+                    onChange={(e) => dispatch(setFullName(e.target.value))}
                     placeholder="Enter your full name"
                     className="w-full rounded-md p-3 bg-gray-100"
                 />
@@ -49,10 +51,17 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
             {/* what describe your work */}
             <div className='flex flex-col gap-4 w-full'>
                 <h1 className="text-xl font-medium text-gray-900 text-left">What describe your work?</h1>
-                <div className='grid grid-rows-3 grid-flow-col gap-2'>
+                <div className='grid grid-rows-3 grid-flow-col gap-3'>
                     {work.map((item, index) => {
                         return (
-                            <button key={index} className="rounded-md p-3 border border-gray-300 border-2">
+                            <button 
+                            key={index} 
+                            className={`rounded-md p-3 border-2 transition-all duration-300 ease-out cursor-pointer active:scale-95 ${
+                                profileWorkRole === item 
+                                    ? "border-green-500 bg-green-50 scale-105 shadow-[5px_3px_4px_rgba(0,0,0,0.4)]" 
+                                    : "border-gray-400 hover:border-blue-400 hover:bg-blue-50 hover:scale-105 hover:shadow-md"
+                            }`} 
+                            onClick={() => dispatch(setProfileWorkRole(profileWorkRole === item ? "" : item))}>
                                 {item}
                             </button>
                         )

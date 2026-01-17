@@ -5,6 +5,9 @@ interface OnboardingState {
     workspaceRole: string
     selectedTools: string[]
     activeTool: string
+    profileWorkRole: string  
+    workPreferences: string[]
+    fullname:string
 }
 
 const initialState: OnboardingState = {
@@ -12,12 +15,18 @@ const initialState: OnboardingState = {
     workspaceRole: "",
     selectedTools: ["Kanban"],
     activeTool: "Kanban",
+    profileWorkRole: "",      
+    workPreferences: [],
+    fullname:""
 }
 
 const onboardingSlice = createSlice({
     name: 'onboarding',
     initialState,
     reducers: {
+        setFullName: (state, action: PayloadAction<string>) => {
+            state.fullname = action.payload
+        },
         setWorkspaceName: (state, action: PayloadAction<string>) => {
             state.workspaceName = action.payload
         },
@@ -29,6 +38,12 @@ const onboardingSlice = createSlice({
         },
         setActiveTool: (state, action: PayloadAction<string>) => {
             state.activeTool = action.payload
+        },
+        setProfileWorkRole: (state, action: PayloadAction<string>) => {  // Add this
+            state.profileWorkRole = action.payload
+        },
+        setWorkPreferences: (state, action: PayloadAction<string[]>) => {  // Add this
+            state.workPreferences = action.payload
         },
         updateOnboardingData: (state, action: PayloadAction<Partial<OnboardingState>>) => {
             return { ...state, ...action.payload }
@@ -42,7 +57,10 @@ export const {
     setWorkspaceRole,
     setSelectedTools,
     setActiveTool,
+    setProfileWorkRole,    
+    setWorkPreferences, 
     updateOnboardingData,
-    resetOnboarding
+    resetOnboarding,
+    setFullName
 } = onboardingSlice.actions
 export default onboardingSlice.reducer

@@ -35,9 +35,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "AgileEnv Team" }],
   creator: "AgileEnv Team",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "https://agileenv.com"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://agileenv.com"),
   openGraph: {
     type: "website",
     locale: "en_US",
