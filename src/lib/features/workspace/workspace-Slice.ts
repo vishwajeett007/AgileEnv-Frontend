@@ -93,6 +93,48 @@ const workspaceSlice = createSlice({
                 }
             }
         },
+        deleteIssue: (state, action: PayloadAction<{ workspaceId: string, issueId: string }>) => {
+            const workspace = state.workspaces.find(w => w.id === action.payload.workspaceId)
+            if (workspace) {
+                workspace.issues = workspace.issues.filter(i => i.id !== action.payload.issueId)
+            }
+        },
+        moveIssue: (state, action: PayloadAction<{
+            workspaceId: string,
+            issueId: string,
+            newStatus: string,
+            newIndex: number
+        }>) => {
+            const workspace = state.workspaces.find(w => w.id === action.payload.workspaceId)
+            if (!workspace) return
+
+            const issueIndex = workspace.issues.findIndex(i => i.id === action.payload.issueId)
+            if (issueIndex === -1) return
+
+            const [issue] = workspace.issues.splice(issueIndex, 1)
+            issue.status = action.payload.newStatus
+
+            // Find all issues in the destination column
+            const destColumnIssues = workspace.issues.filter(i => i.status === action.payload.newStatus)
+
+            // Find the global index where we should insert the issue
+            // We want to insert it at newIndex within the destColumnIssues
+            let globalInsertIndex = workspace.issues.length // default to end
+
+            if (destColumnIssues.length > 0 && action.payload.newIndex < destColumnIssues.length) {
+                const targetIssueInColumn = destColumnIssues[action.payload.newIndex]
+                globalInsertIndex = workspace.issues.indexOf(targetIssueInColumn)
+            } else if (destColumnIssues.length > 0) {
+                // Insert after the last issue in that column
+                const lastIssueInColumn = destColumnIssues[destColumnIssues.length - 1]
+                globalInsertIndex = workspace.issues.indexOf(lastIssueInColumn) + 1
+            } else {
+                // If column is empty, we can just push it or find the best spot
+                // For simplicity, let's just push it to the end if we can't find a better spot
+            }
+
+            workspace.issues.splice(globalInsertIndex, 0, issue)
+        },
         addNote: (state, action: PayloadAction<{ workspaceId: string, note: Note }>) => {
             const workspace = state.workspaces.find(w => w.id === action.payload.workspaceId)
             if (workspace) {
@@ -108,6 +150,8 @@ export const {
     addProjectToWorkspace,
     addIssue,
     updateIssueStatus,
+    deleteIssue,
+    moveIssue,
     addNote
 } = workspaceSlice.actions
 export default workspaceSlice.reducer

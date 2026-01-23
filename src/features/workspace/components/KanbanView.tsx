@@ -1,10 +1,10 @@
 "use client"
 
-import { MoreHorizontal, Clock, MessageSquare, Tag } from "lucide-react"
+import { MoreHorizontal, Clock, MessageSquare, Tag, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { useParams } from "next/navigation"
-import { updateIssueStatus } from "@/lib/features/workspace/workspace-Slice"
+import { deleteIssue, moveIssue } from "@/lib/features/workspace/workspace-Slice"
 import CreateIssueModal from "@/features/workspace/components/CreateIssueModal"
 
 export default function KanbanView() {
@@ -26,11 +26,31 @@ export default function KanbanView() {
 
     const getPriorityColor = (priority: string) => {
         switch (priority) {
-            case "Highest": return "bg-red-100 text-red-700"
-            case "High": return "bg-orange-100 text-orange-700"
-            case "Medium": return "bg-blue-100 text-blue-700"
-            case "Low": return "bg-green-100 text-green-700"
-            default: return "bg-gray-100 text-gray-700"
+            case "Highest": return "bg-red-100 text-red-700 font-bold"
+            case "High": return "bg-orange-100 text-orange-700 font-bold"
+            case "Medium": return "bg-blue-100 text-blue-700 font-bold"
+            case "Low": return "bg-green-100 text-green-700 font-bold"
+            default: return "bg-gray-100 text-gray-700 font-bold"
+        }
+    }
+
+    const onDragStart = (e: React.DragEvent, issueId: string) => {
+        e.dataTransfer.setData("issueId", issueId)
+    }
+
+    const onDragOver = (e: React.DragEvent) => {
+        e.preventDefault()
+    }
+
+    const onDrop = (e: React.DragEvent, newStatus: string, newIndex: number) => {
+        const issueId = e.dataTransfer.getData("issueId")
+        dispatch(moveIssue({ workspaceId, issueId, newStatus, newIndex }))
+    }
+
+    const handleDelete = (e: React.MouseEvent, issueId: string) => {
+        e.stopPropagation()
+        if (confirm("Are you sure you want to delete this issue?")) {
+            dispatch(deleteIssue({ workspaceId, issueId }))
         }
     }
 
@@ -65,20 +85,37 @@ export default function KanbanView() {
                                 </Button>
                             </div>
 
-                            <div className="flex-1 flex flex-col gap-3 bg-[#F4F5F7]/50 rounded-lg p-2 border-2 border-transparent transition-all hover:bg-[#F4F5F7]">
-                                {columnIssues.map((issue) => (
+                            <div
+                                className="flex-1 flex flex-col gap-3 bg-[#F4F5F7]/50 rounded-lg p-2 border-2 border-transparent transition-all hover:bg-[#F4F5F7]"
+                                onDragOver={onDragOver}
+                                onDrop={(e) => onDrop(e, columnTitle, columnIssues.length)}
+                            >
+                                {columnIssues.map((issue, index) => (
                                     <div
                                         key={issue.id}
-                                        className="bg-white p-4 rounded-lg shadow-sm border border-[#DFE1E6] flex flex-col gap-3 cursor-pointer hover:shadow-md hover:border-blue-400 transition-all group/card active:scale-[0.98]"
-                                        onClick={() => {
-                                            const nextStatus = columns[(columns.indexOf(issue.status) + 1) % columns.length]
-                                            dispatch(updateIssueStatus({ workspaceId, issueId: issue.id, status: nextStatus }))
+                                        draggable
+                                        onDragStart={(e) => onDragStart(e, issue.id)}
+                                        onDragOver={onDragOver}
+                                        onDrop={(e) => {
+                                            e.stopPropagation()
+                                            onDrop(e, columnTitle, index)
                                         }}
+                                        className="bg-white p-4 rounded-lg shadow-sm border border-[#DFE1E6] flex flex-col gap-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-blue-400 transition-all group/card relative"
                                     >
                                         <div className="flex justify-between items-start">
                                             <div className="text-[10px] font-bold text-[#42526E] tracking-tighter uppercase">{issue.key}</div>
-                                            <div className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-tighter", getPriorityColor(issue.priority))}>
-                                                {issue.priority}
+                                            <div className="flex items-center gap-1">
+                                                <div className={cn("text-[8px] px-1.5 py-0.5 rounded uppercase tracking-tighter", getPriorityColor(issue.priority))}>
+                                                    {issue.priority}
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-6 w-6 text-[#6B778C] hover:text-red-600 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
+                                                    onClick={(e) => handleDelete(e, issue.id)}
+                                                >
+                                                    <Trash2 size={12} />
+                                                </Button>
                                             </div>
                                         </div>
                                         <div className="text-sm font-medium text-[#172B4D] leading-tight">{issue.summary}</div>
