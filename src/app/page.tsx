@@ -8,7 +8,7 @@ export default async function HomePage() {
     if (accessToken) {
         redirect("/dashboard");
     } else {
-        redirect("/");
+        redirect("/login");
     }
 }
 
