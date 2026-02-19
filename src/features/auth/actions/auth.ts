@@ -2,7 +2,9 @@
 import * as z from "zod";
 import { RegisterSchema, LoginSchema, ResetSchema, VerifySchema, ResetCompleteSchema } from "@/features/auth/schemas";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL1 || process.env.NEXT_PUBLIC_API_URL;
+const API_URL = 
+// process.env.NEXT_PUBLIC_API_URL1 ||
+process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
