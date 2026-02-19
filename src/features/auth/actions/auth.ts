@@ -1,32 +1,8 @@
-"use server";
 
 import * as z from "zod";
 import { RegisterSchema, LoginSchema, ResetSchema, VerifySchema, ResetCompleteSchema } from "@/features/auth/schemas";
-import { cookies } from "next/headers";
 
-const setAuthCookie = async (
-    name: string,
-    value: string,
-    remember: boolean,
-    maxAgeSeconds: number = 24 * 60 * 60,
-    cookieStoreParam?: Awaited<ReturnType<typeof cookies>>
-) => {
-    const cookieStore = cookieStoreParam || await cookies();
-    cookieStore.set(name, value, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: remember ? maxAgeSeconds : undefined,
-    });
-};
-
-export const removeAuthCookie = async (...names: string[]) => {
-    const cookieStore = await cookies();
-    names.forEach(name => cookieStore.delete(name));
-}
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-// process.env.NEXT_PUBLIC_API_URL1 ||
-// process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL1 || process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
@@ -35,7 +11,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         return { error: "Invalid fields!" };
     }
 
-    const { email, password, rememberMe } = validatedFields.data;
+    const { email, password } = validatedFields.data;
 
     try {
         const response = await fetch(`${API_URL}login/`, {
@@ -57,28 +33,13 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         }
 
         const data = await response.json();
-        const remember = !!rememberMe;
-        const cookieStore = await cookies();
-
-        cookieStore.delete("otpAllowed")
-        cookieStore.delete("otpAllowedForget")
-
-        // Reuse cookieStore to avoid multiple await cookies() calls
-        await Promise.all([
-            setAuthCookie("access_token", data.access_token, remember, 60 * 60 * 24, cookieStore),
-            setAuthCookie("refresh_token", data.refresh_token, remember, 60 * 60 * 24 * 7, cookieStore),
-            setAuthCookie("user", JSON.stringify(data.user), remember, 60 * 60 * 24 * 7, cookieStore)
-        ]);
-
         return { success: "Login successful!", data };
     } catch (error) {
         return { error, message: "Something went wrong!" };
     }
 };
 
-export const refreshAuthToken = async () => {
-    const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refresh_token")?.value;
+export const refreshAuthToken = async (refreshToken: string) => {
     if (!refreshToken) {
         return { error: "No refresh token found" };
     }
@@ -103,10 +64,8 @@ export const refreshAuthToken = async () => {
 
         const newRefreshToken = data.refresh || data.refresh_token;
         const newAccessToken = data.access || data.access_token;
-        await Promise.all([setAuthCookie("refresh_token", newRefreshToken, true, 60 * 60 * 24 * 7), setAuthCookie("access_token", newAccessToken, true, 60 * 60 * 24)
-        ])
 
-        return { success: "Token refreshed", accessToken: newAccessToken };
+        return { success: "Token refreshed", accessToken: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
         return { error, message: "Something went wrong during refresh" };
     }
@@ -129,7 +88,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     };
 
     try {
-        const response = await fetch(`${API_URL}register/`, {
+        const response = await fetch(`${API_URL}register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -143,9 +102,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
                 return { error: "Registration failed!" };
             }
         }
-
-        const cookieStore = await cookies();
-        cookieStore.set("otpAllowed", "true", { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 5 });
 
         return { success: "Registration successful!", email: payload.email };
     } catch (error) {
@@ -176,8 +132,6 @@ export const forgotPassword = async (values: z.infer<typeof ResetSchema>) => {
             }
         }
 
-        const cookieStore = await cookies();
-        cookieStore.set("otpAllowedForget", "true", { httpOnly: true, secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 5 });
         return { success: "Reset email sent!" };
     } catch (error) {
         return { error: "Something went wrong!" };
@@ -345,18 +299,12 @@ export const googleCallback = async (code: string, state: string) => {
         }
 
         const data = await response.json();
-        const accessToken = data.access_token;
-        const refreshToken = data.refresh_token;
-        const user = data.user;
-
-        const cookieStore = await cookies();
-        await Promise.all([
-            setAuthCookie("access_token", accessToken, true, 60 * 60 * 24, cookieStore),
-            setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7, cookieStore),
-            setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7, cookieStore)
-        ]);
-
-        return { success: "Logged In!", accessToken, refreshToken, user };
+        return {
+            success: "Logged In!",
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+            user: data.user,
+        };
     }
     catch (error) {
         return { error: "Something went wrong!" };
@@ -405,18 +353,12 @@ export const githubCallback = async (code: string, state: string) => {
         }
 
         const data = await response.json();
-        const accessToken = data.access_token;
-        const refreshToken = data.refresh_token;
-        const user = data.user;
-
-        const cookieStore = await cookies();
-        await Promise.all([
-            setAuthCookie("access_token", accessToken, true, 60 * 60 * 24, cookieStore),
-            setAuthCookie("refresh_token", refreshToken, true, 60 * 60 * 24 * 7, cookieStore),
-            setAuthCookie("user", JSON.stringify(user), true, 60 * 60 * 24 * 7, cookieStore)
-        ]);
-
-        return { success: "Logged In!", accessToken, refreshToken, user };
+        return {
+            success: "Logged In!",
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+            user: data.user,
+        };
     }
     catch (error) {
         return { error: "Something went wrong!" };

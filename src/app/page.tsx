@@ -1,14 +1,20 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function HomePage() {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("access_token")?.value;
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-    if (accessToken) {
-        redirect("/dashboard");
-    } else {
-        redirect("/login");
-    }
+export default function HomePage() {
+    const router = useRouter();
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken) {
+            router.replace("/dashboard");
+        } else {
+            router.replace("/login");
+        }
+    }, [router]);
+
+    return null;
 }
 

@@ -48,6 +48,7 @@ export const RegisterForm = () => {
             const res = await register(values);
 
             if (res.success && res.email) {
+                localStorage.setItem("otpAllowed", "true");
                 toast.success("Check your email for verification");
                 router.push(`/verify-email?email=${res.email}`);
             } else {

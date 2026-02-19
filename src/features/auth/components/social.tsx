@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { googleRedirect, githubRedirect } from "@/features/auth/actions/auth";

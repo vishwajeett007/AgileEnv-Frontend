@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { removeAuthCookie } from "@/features/auth/actions/auth";
+import { useAppDispatch } from "@/lib/hooks";
+import { logout } from "@/lib/features/auth/auth-Slice";
 
 export const LogoutButton = () => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         setIsLoggingOut(true);
         try {
-            await removeAuthCookie("access_token", "refresh_token", "user");
+            dispatch(logout());
             router.push("/login");
         } catch (error) {
             console.error("Logout failed", error);

@@ -38,6 +38,7 @@ export const ForgotPasswordForm = () => {
             const res = await forgotPassword(values);
 
             if (res.success) {
+                localStorage.setItem("otpAllowedForget", "true");
                 router.push(`/verify-otp?email=${values.email}`);
             } else {
                 const errorMessage = typeof res?.error === "string" ? res.error : "Failed to send reset email";
