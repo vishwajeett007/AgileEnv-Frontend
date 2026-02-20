@@ -85,24 +85,26 @@ const authSlice = createSlice({
       state.rememberMe = rememberMe;
       state.isAuthenticated = true;
 
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        localStorage.removeItem("user");
-      }
-      localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);
-      localStorage.setItem("remember_me", rememberMe.toString());
-      localStorage.setItem(
-        "token_expiry",
-        (Date.now() + 60 * 60 * 1000).toString(),
-      );
+      if (typeof window !== "undefined") {
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          localStorage.removeItem("user");
+        }
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
+        localStorage.setItem("remember_me", rememberMe.toString());
+        localStorage.setItem(
+          "token_expiry",
+          (Date.now() + 60 * 60 * 1000).toString(),
+        );
 
-      if (!rememberMe) {
-        const sessionExpiry = Date.now() + 24 * 60 * 60 * 1000;
-        localStorage.setItem("session_expiry", sessionExpiry.toString());
-      } else {
-        localStorage.removeItem("session_expiry");
+        if (!rememberMe) {
+          const sessionExpiry = Date.now() + 24 * 60 * 60 * 1000;
+          localStorage.setItem("session_expiry", sessionExpiry.toString());
+        } else {
+          localStorage.removeItem("session_expiry");
+        }
       }
     },
 
@@ -119,16 +121,18 @@ const authSlice = createSlice({
       const tokenExpiry = Date.now() + 60 * 60 * 1000;
       state.tokenExpiry = tokenExpiry;
 
-      localStorage.setItem("access_token", action.payload.accessToken);
-      localStorage.setItem("refresh_token", action.payload.refreshToken);
-      localStorage.setItem("token_expiry", tokenExpiry.toString());
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", action.payload.accessToken);
+        localStorage.setItem("refresh_token", action.payload.refreshToken);
+        localStorage.setItem("token_expiry", tokenExpiry.toString());
 
-      const rememberMe = localStorage.getItem("remember_me") === "true";
-      if (!rememberMe) {
-        const sessionExpiry = Date.now() + 24 * 60 * 60 * 1000;
-        localStorage.setItem("session_expiry", sessionExpiry.toString());
-      } else {
-        localStorage.removeItem("session_expiry");
+        const rememberMe = localStorage.getItem("remember_me") === "true";
+        if (!rememberMe) {
+          const sessionExpiry = Date.now() + 24 * 60 * 60 * 1000;
+          localStorage.setItem("session_expiry", sessionExpiry.toString());
+        } else {
+          localStorage.removeItem("session_expiry");
+        }
       }
     },
 
@@ -140,13 +144,15 @@ const authSlice = createSlice({
       state.tokenExpiry = null;
       state.isAuthenticated = false;
 
-      localStorage.removeItem("user");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("otpAllowed");
-      localStorage.removeItem("otpAllowedForget");
-      localStorage.removeItem("token_expiry");
-      localStorage.removeItem("session_expiry");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("otpAllowed");
+        localStorage.removeItem("otpAllowedForget");
+        localStorage.removeItem("token_expiry");
+        localStorage.removeItem("session_expiry");
+      }
     },
   },
 });

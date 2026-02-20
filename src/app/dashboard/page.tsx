@@ -2,12 +2,23 @@
 
 import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
 import { LogoutButton } from "@/features/auth/components/logout-button";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const DashboardPage = () => {
-    
-    if(!localStorage.getItem("access_token")){
-        window.location.href = "/login";
-    }
+    const router = useRouter();
+    const [isChecking, setIsChecking] = useState(true);
+
+    useEffect(() => {
+        if (!localStorage.getItem("access_token")) {
+           router.push("/login");
+           localStorage.clear();
+        } else {
+            setIsChecking(false);
+        }
+    }, []);
+
+    if (isChecking) return null;
 
 
     return (
