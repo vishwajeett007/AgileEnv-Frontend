@@ -1,11 +1,15 @@
 import Image from 'next/image'
+import { useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { setProfileImage } from '@/lib/features/onboarding/onboarding-Slice';
+import { file } from 'zod';
 
-const ProfilePhoto = (props:
-     { step: number; 
-       handleNext: () => void; 
-    }) => {
+const ProfilePhoto = (props:{ step: number; handleNext: () => void; }) => {
 
     const { handleNext } = props;
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const dispatch = useAppDispatch();
+    const profileImage = useAppSelector((state) => state.onboarding.profileImage);
 
     const handleSkip = () => {
         handleNext();
@@ -37,6 +41,18 @@ const ProfilePhoto = (props:
         // '/Images/p9.svg',
         // '/Images/p10.svg',
     ]
+
+    const handlePhotoAdd = () => {
+        fileInputRef.current?.click();
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        dispatch(setProfileImage(file));
+    }
+
     return (
 
         <div className='max-w-4xl xl:max-w-6xl flex flex-col items-center gap-6 p-8 lg:p-12'>
@@ -48,7 +64,7 @@ const ProfilePhoto = (props:
 
             <div className='flex flex-col items-center gap-4'>
                 <Image
-                    src='/Images/p0.svg'
+                    src={profileImage ? URL.createObjectURL(profileImage) : "/Images/p0.svg"}
                     alt='logo'
                     width={230}
                     height={230}
@@ -56,6 +72,19 @@ const ProfilePhoto = (props:
 
                 <div className='grid grid-rows-2 grid-flow-col gap-4'>
                     {(images.map((image, index) => {
+                        if(index === images.length - 1){
+                            return (
+                                <div key={index} className='rounded-full cursor-pointer w-16 h-16 xl:w-23 xl:h-23 flex items-center justify-center'>
+                                    <Image
+                                        src={image}
+                                        alt='add'
+                                        width={70}
+                                        height={70}
+                                        onClick={handlePhotoAdd}
+                                    />
+                                </div>
+                            )
+                        }
                         return (
                             <Image
                                 src={image}
@@ -73,6 +102,7 @@ const ProfilePhoto = (props:
                 <button className='bg-transparent text-blue-600 px-5 py-2 rounded-md w-full border border-blue-600' onClick={handleSkip} >Skip</button>
                 <button className='bg-blue-600 text-white px-5 py-2 rounded-md w-full' onClick={handleContinue} >Continue</button>
             </div>
+            <input aria-label="Profile photo input" id='file-input' type='file' accept='image/*' ref={fileInputRef} className='hidden' onChange={handleFileChange} />
         </div>
     )
 }

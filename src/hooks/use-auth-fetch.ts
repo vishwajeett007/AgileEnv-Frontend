@@ -46,11 +46,12 @@ export function useAuthFetch() {
           currentAccessToken = result.accessToken;
         }
       }
+      const isFormData = options.body instanceof FormData;
 
       const response = await fetch(`${API_URL}${endpoints}`, {
         ...options,
         headers: {
-          "Content-Type": "application/json",
+          ...(isFormData ? {} : { "Content-Type": "application/json" }),
           Authorization: `Bearer ${currentAccessToken}`,
           ...options.headers,
         },
@@ -73,19 +74,23 @@ export function useAuthFetch() {
             }),
           );
 
+          const isFormData = options.body instanceof FormData;
+
           const retryResponse = await fetch(`${API_URL}${endpoints}`, {
             ...options,
             headers: {
-              ...options.headers,
-              "Content-Type": "application/json",
               Authorization: `Bearer ${result.accessToken}`,
+              ...(isFormData ? {} : { "Content-Type": "application/json" }),
+              ...options.headers,
             },
           });
           return retryResponse;
         }
       }
       return response;
-    },[accessToken, refreshToken, tokenExpiry, dispatch, router]);
+    },
+    [accessToken, refreshToken, tokenExpiry, dispatch, router],
+  );
 
-    return authFetch;
+  return authFetch;
 }

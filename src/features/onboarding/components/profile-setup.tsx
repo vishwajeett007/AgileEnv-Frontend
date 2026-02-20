@@ -89,7 +89,7 @@ const ProfileSetup = () => {
                         <ProfileDetails step={step} handleNext={handleNext} />
                     }
                     {step === 3 &&
-                        <WorkPreference step={step} handleNext={handleNext} />
+                        <WorkPreference />
                     }
 
                 </div>

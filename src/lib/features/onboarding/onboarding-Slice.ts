@@ -8,6 +8,7 @@ interface OnboardingState {
     profileWorkRole: string  
     workPreferences: string[]
     fullname:string
+    profileImage: File | null
 }
 
 const initialState: OnboardingState = {
@@ -17,7 +18,8 @@ const initialState: OnboardingState = {
     activeTool: "Kanban",
     profileWorkRole: "",      
     workPreferences: [],
-    fullname:""
+    fullname:"",
+    profileImage: null,
 }
 
 const onboardingSlice = createSlice({
@@ -26,6 +28,9 @@ const onboardingSlice = createSlice({
     reducers: {
         setFullName: (state, action: PayloadAction<string>) => {
             state.fullname = action.payload
+        },
+        setProfileImage: (state, action: PayloadAction<File | null>) => {
+            state.profileImage = action.payload
         },
         setWorkspaceName: (state, action: PayloadAction<string>) => {
             state.workspaceName = action.payload
@@ -61,6 +66,7 @@ export const {
     setWorkPreferences, 
     updateOnboardingData,
     resetOnboarding,
-    setFullName
+    setFullName,
+    setProfileImage,
 } = onboardingSlice.actions
 export default onboardingSlice.reducer

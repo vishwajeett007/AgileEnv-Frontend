@@ -1,9 +1,14 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { resetOnboarding, setWorkPreferences } from "@/lib/features/onboarding/onboarding-Slice";
+import { useRouter } from "next/navigation";
+import { useAuthFetch } from "@/hooks/use-auth-fetch";
 
-const WorkPreference = (props: { step: number; handleNext: () => void; }) => {
+const WorkPreference = () => {
+
+    const  authFetch  = useAuthFetch();
     const dispatch = useAppDispatch();
-    const workPreferences = useAppSelector((state) => state.onboarding.workPreferences);
+    const router = useRouter();
+    const {workPreferences, profileWorkRole , fullname, profileImage} = useAppSelector((state) => state.onboarding);
     
     const work = [
         "Plan and manage sprints",
@@ -13,14 +18,31 @@ const WorkPreference = (props: { step: number; handleNext: () => void; }) => {
         "Bug tracking",
         "Roadmap planning",
     ]
-
-    const { handleNext } = props;
-    const handleSkip = () => {
-        handleNext();
+    const formData = new FormData();
+    formData.append("name", fullname);
+    if (profileImage) {
+        formData.append("image", profileImage);
     }
-    const handleContinue = () => {
-        dispatch(resetOnboarding())
-        handleNext();
+    formData.append("post", profileWorkRole);
+    formData.append("reason", JSON.stringify(workPreferences));
+
+    const handleSkip = () => {
+        handleContinue();
+    }
+
+    const handleContinue = async () => {
+        try {
+            const response = await authFetch("profile/" , {
+                method : "POST",
+                body : formData
+            });
+            const data = await response.json();
+            console.log("Profile saved successfully", data);
+            dispatch(resetOnboarding());
+            router.push("/dashboard");
+        } catch (error) {            
+            console.error("Failed to save profile data", error);
+        }
     }
 
     return (
@@ -59,7 +81,7 @@ const WorkPreference = (props: { step: number; handleNext: () => void; }) => {
 
             <div className='flex items-center gap-3 w-full'>
                 <button className='bg-transparent text-blue-600 px-5 py-2 rounded-md w-full border border-blue-600 border-2' onClick={handleSkip} >Skip</button>
-                <button className='bg-blue-600 text-white px-5 py-2 rounded-md w-full' onClick={handleContinue} >Finsh</button>
+                <button className='bg-blue-600 text-white px-5 py-2 rounded-md w-full' onClick={handleContinue} >Finish</button>
             </div>
         </div>)
 }
