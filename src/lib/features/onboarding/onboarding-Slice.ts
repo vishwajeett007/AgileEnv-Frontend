@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { set } from 'zod'
 
 interface OnboardingState {
     workspaceName: string
+    description: string
+    code: string
     workspaceRole: string
     selectedTools: string[]
     activeTool: string
@@ -13,6 +16,8 @@ interface OnboardingState {
 
 const initialState: OnboardingState = {
     workspaceName: "",
+    description: "",
+    code: "",
     workspaceRole: "",
     selectedTools: ["Kanban"],
     activeTool: "Kanban",
@@ -34,6 +39,12 @@ const onboardingSlice = createSlice({
         },
         setWorkspaceName: (state, action: PayloadAction<string>) => {
             state.workspaceName = action.payload
+        },
+        setWorkspaceDescription: (state, action: PayloadAction<string>) => {
+            state.description = action.payload
+        },
+        setWorkspaceCode: (state, action: PayloadAction<string>) => {
+            state.code = action.payload
         },
         setWorkspaceRole: (state, action: PayloadAction<string>) => {
             state.workspaceRole = action.payload
@@ -59,6 +70,8 @@ const onboardingSlice = createSlice({
 
 export const {
     setWorkspaceName,
+    setWorkspaceCode,
+    setWorkspaceDescription,
     setWorkspaceRole,
     setSelectedTools,
     setActiveTool,

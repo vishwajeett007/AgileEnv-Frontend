@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { setWorkspaceName } from "@/lib/features/onboarding/onboarding-Slice"
-
+import { setWorkspaceName, setWorkspaceDescription, setWorkspaceCode } from "@/lib/features/onboarding/onboarding-Slice"
+import { useAuthFetch } from "@/hooks/use-auth-fetch"
 interface WorkspaceStepProps {
     onNext: () => void
 }
@@ -13,11 +14,39 @@ interface WorkspaceStepProps {
 export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
 
     const dispatch = useAppDispatch();
-    const { workspaceName } = useAppSelector((state) => state.onboarding)
+    const authFetch = useAuthFetch();
+    const { workspaceName, description, code } = useAppSelector((state) => state.onboarding)
+    const [isCodeFocused, setIsCodeFocused] = useState(false);
 
-    const handleNext = () => {
-        if (workspaceName.trim()) {
-            onNext()
+
+    const isValidCode = (value: string) => {
+        const upper = (value.match(/[A-Z]/g) || []).length;
+        const lower = (value.match(/[a-z]/g) || []).length;
+        const digits = (value.match(/[0-9]/g) || []).length;
+        return upper >= 2 && lower >= 2 && digits >= 4 && value.length === 8;
+    };
+
+    const codeValid = isValidCode(code);
+
+    const handleSubmit = async () => {
+        if (workspaceName.trim() && description.trim() && codeValid) {
+            try {
+                const response = await authFetch("workspace/create/", {
+                    method : "POST",
+                    body : JSON.stringify({
+                        name : workspaceName,
+                        description : description,
+                        code : code
+                    }),
+                })
+                if(response.ok){
+                    const data = await response.json();
+                    console.log("Workspace created successfully", data);
+                    onNext();
+                }
+            } catch (error){
+                console.error("Error creating workspace", error);
+            }
         }
     }
 
@@ -41,15 +70,85 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
                 </p>
             </div>
 
-            <div className="flex flex-col gap-2">
-                <Input
-                    id="workspace-name"
-                    placeholder="Workspace Name"
-                    value={workspaceName}
-                    onChange={(e) => dispatch(setWorkspaceName(e.target.value))}
-                    className="h-12 px-5 bg-gray-100 placeholder:text-gray-400"
-                    autoFocus
-                />
+            <div className="flex flex-col gap-4">
+                <div className="relative w-full">
+                    <Input
+                        id="workspace-name"
+                        placeholder=" "
+                        value={workspaceName}
+                        onChange={(e) => dispatch(setWorkspaceName(e.target.value))}
+                        className="h-12 px-5 bg-gray-100 peer border border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        autoFocus
+                    />
+
+                    <label
+                        htmlFor="workspace-name"
+                        className={`absolute left-3 bg-gray-100 px-1 rounded-sm transition-all duration-200
+                             ${workspaceName.trim().length > 0
+                                ? "-top-2 text-xs text-gray-500"
+                                : "top-3 text-base text-gray-400"
+                            }`}
+                    >
+                        Workspace Name
+                    </label>
+                </div>
+                <div className="relative w-full">
+                    <Input
+                        id="workspace-description"
+                        placeholder=" "
+                        value={description}
+                        onChange={(e) => dispatch(setWorkspaceDescription(e.target.value))}
+                        className="h-12 px-5 bg-gray-100 peer border border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        autoFocus
+                    />
+
+                    <label
+                        htmlFor="workspace-description"
+                        className={`absolute left-3 bg-gray-100 px-1 rounded-sm transition-all duration-200
+                                ${description.trim().length > 0
+                                ? "-top-2 text-xs text-gray-500"
+                                : "top-3 text-base text-gray-400"
+                            }`}
+                    >
+                        Workspace Description
+                    </label>
+                </div>
+                <div className="relative w-full">
+                    <Input
+                        id="workspace-code"
+                        placeholder=" "
+                        value={code}
+                        maxLength={8}
+                        onChange={(e) => dispatch(setWorkspaceCode(e.target.value))}
+                        onFocus={() => setIsCodeFocused(true)}
+                        onBlur={() => setIsCodeFocused(false)}
+                        className={`h-12 px-5 bg-gray-100 peer border focus:ring-1 ${code.length > 0 && !codeValid ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-400 focus:border-blue-500 focus:ring-blue-500"}`}
+                        autoFocus
+                    />
+
+                    <label
+                        htmlFor="workspace-code"
+                        className={`absolute left-3 bg-gray-100 px-1 rounded-sm transition-all duration-200
+                             ${code.trim().length > 0
+                                ? "-top-2 text-xs text-gray-500"
+                                : "top-3 text-base text-gray-400"
+                            }`}
+                    >
+                        Workspace Code
+                    </label>
+                    {isCodeFocused && (
+                        <div className="absolute z-10 w-full mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-xl text-sm text-gray-600 top-full left-0 animate-in fade-in zoom-in-95 duration-200">
+                            <div className="absolute -top-2 left-4 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45"></div>
+                            <h4 className="font-semibold mb-2 text-gray-700">Code Requirements</h4>
+                            <ul className="list-disc pl-5 space-y-1 text-xs">
+                                <li className={`${(code.match(/[A-Z]/g) || []).length >= 2 ? "text-green-600" : "text-gray-600"}`}>At least 2 uppercase letters (A-Z)</li>
+                                <li className={`${(code.match(/[a-z]/g) || []).length >= 2 ? "text-green-600" : "text-gray-600"}`}>At least 2 lowercase letters (a-z)</li>
+                                <li className={`${(code.match(/[0-9]/g) || []).length >= 4 ? "text-green-600" : "text-gray-600"}`}>At least 4 numbers (0-9)</li>
+                                <li className={`${code.length === 8 ? "text-green-600" : "text-gray-600"}`}>Exactly 8 characters total</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
                 <p className="text-sm text-muted-foreground">
                     You can change this later
                 </p>
@@ -58,7 +157,9 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
             <div className="flex items-center justify-center">
                 <Button
                     className="w-full hover:bg-blue-800 bg-blue-700 py-6 text-lg text-white font-light"
-                    onClick={handleNext} disabled={!workspaceName.trim()}>
+                    onClick={handleSubmit} 
+                    disabled={!workspaceName.trim() || !codeValid || !description.trim()}
+                    >
                     Continue
                 </Button>
             </div>

@@ -145,10 +145,10 @@ export const RegisterForm = () => {
 
                                             <h4 className="font-semibold mb-2 text-gray-900">Password Requirements</h4>
                                             <ul className="list-disc pl-5 space-y-1 text-xs">
-                                                <li>Password must contain 6 characters</li>
-                                                <li>Include at least one uppercase letter (A-Z).</li>
-                                                <li>Include at least one number (0-9).</li>
-                                                <li>Include at least one special character.</li>
+                                                <li className={`${field.value.length >= 6 ? "text-green-600" : "text-gray-600"}`}>Password must contain 6 characters</li>
+                                                <li className={`${/[A-Z]/.test(field.value) ? "text-green-600" : "text-gray-600"}`}>Include at least one uppercase letter (A-Z).</li>
+                                                <li className={`${/[0-9]/.test(field.value) ? "text-green-600" : "text-gray-600"}`}>Include at least one number (0-9).</li>
+                                                <li className={`${/[^A-Za-z0-9]/.test(field.value) ? "text-green-600" : "text-gray-600"}`}>Include at least one special character.</li>
                                             </ul>
                                         </div>
                                     )}
