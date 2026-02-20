@@ -30,7 +30,7 @@ export const LoginForm = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const [showPassword, setShowPassword] = useState(false);
-
+    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof LoginSchema>>({
@@ -53,6 +53,7 @@ export const LoginForm = () => {
                     user: data.data.user,
                     accessToken: data.data.access_token,
                     refreshToken: data.data.refresh_token,
+                    rememberMe: rememberMe,
                 }));
                 router.push("/dashboard");
             } else {
@@ -65,7 +66,7 @@ export const LoginForm = () => {
         } finally {
             setLoading(false);
         }
-    }, [router, dispatch]);
+    }, [router, dispatch, rememberMe]);
 
     const throttledSubmit = useThrottle(onSubmit, 1000);
 
@@ -140,7 +141,10 @@ export const LoginForm = () => {
                                             id="remember"
                                             className="border-gray-400"
                                             checked={field.value}
-                                            onCheckedChange={field.onChange}
+                                            onCheckedChange={(checked) => {
+                                                setRememberMe(checked as boolean);
+                                                field.onChange(checked);
+                                            }}
                                             disabled={loading}
                                         />
                                     </FormControl>

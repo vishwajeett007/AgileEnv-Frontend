@@ -68,6 +68,7 @@ export const metadata: Metadata = {
 
 import { Toaster } from "@/components/ui/sonner";
 import StoreProvider from "@/lib/providers/ReduxProvider";
+import TokenRefreshProvider from "@/lib/providers/TokenRefreshProvider";
 
 export default function RootLayout({
   children,
@@ -81,7 +82,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <StoreProvider>
+        <TokenRefreshProvider>
           {children}
+        </TokenRefreshProvider>
         </StoreProvider>
         <Toaster richColors />
       </body>

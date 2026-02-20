@@ -1,6 +1,7 @@
 
 import * as z from "zod";
 import { RegisterSchema, LoginSchema, ResetSchema, VerifySchema, ResetCompleteSchema } from "@/features/auth/schemas";
+import { Toaster } from "sonner";
 
 const API_URL = 
 // process.env.NEXT_PUBLIC_API_URL1 ||
@@ -253,6 +254,7 @@ export const completeReset = async (values: z.infer<typeof ResetCompleteSchema>)
                 return { error: "Failed to Verify OTP!" };
             }
         }
+        
         return { success: "Verified!" };
     }
     catch (error) {

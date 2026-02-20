@@ -16,9 +16,6 @@ const nextConfig: NextConfig = {
     ];
   },
   experimental: {},
-  turbopack: {
-    root: "C:\\Users\\Vishwajeet Singh\\jira",
-  },
 };
 
 export default nextConfig;
