@@ -7,7 +7,7 @@ import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { setWorkspaceName, setWorkspaceDescription, setWorkspaceCode } from "@/lib/features/onboarding/onboarding-Slice"
 import { useAuthFetch } from "@/hooks/use-auth-fetch"
-import { Toaster } from "sonner"
+import { Toaster, toast } from "sonner"
 interface WorkspaceStepProps {
     onNext: () => void
 }
@@ -44,9 +44,14 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
                     const data = await response.json();
                     console.log("Workspace created successfully", data);
                     onNext();
+                } else {
+                    const errorData = await response.json();
+                    const errorMessage = errorData?.detail || "Failed to create workspace";
+                    toast.error(errorMessage);
+                    console.error("Error creating workspace", errorMessage);
                 }
             } catch (error){
-                Toaster(error || "Failed to create workspace");
+                toast.error(error instanceof Error ? error.message : "Failed to create workspace");
                 console.error("Error creating workspace", error);
             }
         }
