@@ -5,91 +5,83 @@ import { RootState } from "@/lib/store";
 import { updateTokens, logout } from "@/lib/features/auth/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import { string } from "zod";
+import { useCallback, useRef } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function useAuthFetch() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { accessToken, refreshToken, tokenExpiry } = useSelector(
-    (state: RootState) => state.auth,
+
+  const { accessToken, refreshToken } = useSelector(
+    (state: RootState) => state.auth
   );
 
+  const refreshPromiseRef = useRef<Promise<any> | null>(null);
+
   const authFetch = useCallback(
-    async (endpoints: string, options: RequestInit = {}) => {
-      let currentAccessToken = accessToken;
-
-      if (tokenExpiry && tokenExpiry < Date.now() - 2 * 60 * 1000) {
-        if (!refreshToken) {
-          dispatch(logout());
-          router.push("/login");
-          throw new Error("No refresh token found, please login again.");
-        }
-
-        const result = await refreshAuthToken(refreshToken);
-
-        if (result.error) {
-          dispatch(logout());
-          router.push("/login");
-          throw new Error("Token refresh failed");
-        }
-
-        if (result.accessToken && result.refreshToken) {
-          dispatch(
-            updateTokens({
-              accessToken: result.accessToken,
-              refreshToken: result.refreshToken,
-            }),
-          );
-          currentAccessToken = result.accessToken;
-        }
+    async (endpoint: string, options: RequestInit = {}) => {
+      if (!accessToken) {
+        dispatch(logout());
+        router.replace("/login");
+        throw new Error("Not authenticated");
       }
-      const isFormData = options.body instanceof FormData;
 
-      const response = await fetch(`${API_URL}${endpoints}`, {
-        ...options,
-        headers: {
-          ...(isFormData ? {} : { "Content-Type": "application/json" }),
-          Authorization: `Bearer ${currentAccessToken}`,
-          ...options.headers,
-        },
-      });
+      const makeRequest = async (token: string) => {
+        const isFormData = options.body instanceof FormData;
 
+        return fetch(`${API_URL}${endpoint}`, {
+          ...options,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
+            ...options.headers,
+          },
+        });
+      };
+
+      let response = await makeRequest(accessToken);
+
+      // If unauthorized → try refresh once
       if (response.status === 401 && refreshToken) {
-        const result = await refreshAuthToken(refreshToken);
+        try {
+          if (!refreshPromiseRef.current) {
+            refreshPromiseRef.current = refreshAuthToken(refreshToken);
+          }
 
-        if (result.error) {
-          dispatch(logout());
-          router.push("/login");
-          throw new Error("Session expired");
-        }
+          const result = await refreshPromiseRef.current;
+          refreshPromiseRef.current = null;
 
-        if (result.accessToken && result.refreshToken) {
+          if (
+            result.error ||
+            !result.accessToken ||
+            !result.refreshToken
+          ) {
+            dispatch(logout());
+            router.replace("/login");
+            throw new Error("Session expired");
+          }
+
           dispatch(
             updateTokens({
               accessToken: result.accessToken,
               refreshToken: result.refreshToken,
-            }),
+            })
           );
 
-          const isFormData = options.body instanceof FormData;
-
-          const retryResponse = await fetch(`${API_URL}${endpoints}`, {
-            ...options,
-            headers: {
-              Authorization: `Bearer ${result.accessToken}`,
-              ...(isFormData ? {} : { "Content-Type": "application/json" }),
-              ...options.headers,
-            },
-          });
-          return retryResponse;
+          // Retry original request
+          response = await makeRequest(result.accessToken);
+        } catch (error) {
+          refreshPromiseRef.current = null;
+          dispatch(logout());
+          router.replace("/login");
+          throw error;
         }
       }
+
       return response;
     },
-    [accessToken, refreshToken, tokenExpiry, dispatch, router],
+    [accessToken, refreshToken, dispatch, router]
   );
 
   return authFetch;
