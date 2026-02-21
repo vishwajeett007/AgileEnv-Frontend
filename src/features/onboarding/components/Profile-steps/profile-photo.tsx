@@ -2,7 +2,8 @@ import Image from 'next/image'
 import { useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setProfileImage } from '@/lib/features/onboarding/onboarding-Slice';
-import { file } from 'zod';
+import {  ProfilePhotoSchema } from '../../schemas';
+import { toast } from 'sonner';
 
 const ProfilePhoto = (props:{ step: number; handleNext: () => void; }) => {
 
@@ -12,10 +13,16 @@ const ProfilePhoto = (props:{ step: number; handleNext: () => void; }) => {
     const profileImage = useAppSelector((state) => state.onboarding.profileImage);
 
     const handleSkip = () => {
+        dispatch(setProfileImage(null));
         handleNext();
     }
 
     const handleContinue = () => {
+        const imageValidation = ProfilePhotoSchema.safeParse({ image: profileImage });
+        if (!imageValidation.success) {
+            toast.error(imageValidation.error.issues[0].message);
+            return;
+        }
         handleNext();
     }
 

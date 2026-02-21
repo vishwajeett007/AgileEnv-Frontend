@@ -27,6 +27,7 @@ const WorkPreference = () => {
     formData.append("reason", JSON.stringify(workPreferences));
 
     const handleSkip = () => {
+        dispatch(setWorkPreferences([]));
         handleContinue();
     }
 

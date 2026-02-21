@@ -7,6 +7,7 @@ import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { setWorkspaceName, setWorkspaceDescription, setWorkspaceCode } from "@/lib/features/onboarding/onboarding-Slice"
 import { useAuthFetch } from "@/hooks/use-auth-fetch"
+import { WorkspaceDetailSchema } from "../../schemas"
 import { Toaster, toast } from "sonner"
 interface WorkspaceStepProps {
     onNext: () => void
@@ -19,7 +20,6 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
     const { workspaceName, description, code } = useAppSelector((state) => state.onboarding)
     const [isCodeFocused, setIsCodeFocused] = useState(false);
 
-
     const isValidCode = (value: string) => {
         const upper = (value.match(/[A-Z]/g) || []).length;
         const lower = (value.match(/[a-z]/g) || []).length;
@@ -30,33 +30,46 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
     const codeValid = isValidCode(code);
 
     const handleSubmit = async () => {
-        if (workspaceName.trim() && description.trim() && codeValid) {
+        const validationResult = WorkspaceDetailSchema.safeParse({ workspace_name: workspaceName, description, workspace_code: code });
+        if (validationResult.success) {
             try {
                 const response = await authFetch("workspace/create/", {
-                    method : "POST",
-                    body : JSON.stringify({
-                        name : workspaceName,
-                        description : description,
-                        code : code
+                    method: "POST",
+                    body: JSON.stringify({
+                        name: workspaceName,
+                        description: description,
+                        code: code
                     }),
                 })
-                if(response.ok){
+                if (response.ok) {
                     const data = await response.json();
                     console.log("Workspace created successfully", data);
                     onNext();
                 } else {
                     const errorData = await response.json();
-                    const errorMessage = errorData?.detail || "Failed to create workspace";
-                    toast.error(errorMessage);
-                    console.error("Error creating workspace", errorMessage);
+
+                    if (Array.isArray(errorData) && errorData.length > 0) {
+                        toast.error(errorData[0].msg);
+                    } else if (errorData?.detail) {
+                        toast.error(errorData.detail);
+                    } else {
+                        toast.error("Failed to create workspace");
+                    }
+
+                    console.error("Error creating workspace", errorData);
                 }
-            } catch (error){
+            } catch (error) {
                 toast.error(error instanceof Error ? error.message : "Failed to create workspace");
                 console.error("Error creating workspace", error);
             }
+        } else {
+            const errorMessage = validationResult.error.issues[0];
+            toast.error(errorMessage.message);
+            console.error("Validation error", errorMessage);
+            return;
         }
     }
-    
+
     return (
         <div className="flex flex-col gap-6 px-1 lg:px-10">
             {/* <div className="flex flex-col gap-4"> */}
@@ -164,9 +177,9 @@ export function WorkspaceStepName({ onNext }: WorkspaceStepProps) {
             <div className="flex items-center justify-center">
                 <Button
                     className="w-full hover:bg-blue-800 bg-blue-700 py-6 text-lg text-white font-light"
-                    onClick={handleSubmit} 
+                    onClick={handleSubmit}
                     disabled={!workspaceName.trim() || !codeValid || !description.trim()}
-                    >
+                >
                     Continue
                 </Button>
             </div>

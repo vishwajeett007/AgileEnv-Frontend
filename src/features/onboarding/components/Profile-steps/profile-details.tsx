@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setFullName, setProfileWorkRole } from "@/lib/features/onboarding/onboarding-Slice";
-
+import { ProfileNameSchema, RoleSelectionSchema } from "../../schemas";
+import { toast } from "sonner";
 const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     const { handleNext } = props;
     const dispatch = useAppDispatch();
@@ -18,10 +19,22 @@ const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {
     ]
 
     const handleSkip = () => {
+        dispatch(setFullName(""));
+        dispatch(setProfileWorkRole(""));
         handleNext();
     }
 
     const handleContinue = () => {
+        const nameValidation = ProfileNameSchema.safeParse({ name: fullname });
+        const roleValidation = RoleSelectionSchema.safeParse({ role: profileWorkRole });
+        if(!nameValidation.success){
+            toast.error(nameValidation.error.issues[0].message);
+            return;
+        }
+        if(!roleValidation.success){
+            toast.error(roleValidation.error.issues[0].message);
+            return;
+        }
         handleNext();
     }
     // console.log(fullname);
