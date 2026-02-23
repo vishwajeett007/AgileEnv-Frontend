@@ -1,5 +1,6 @@
 "use client";
-
+import { useState } from "react";
+import{ Globe, File, Folder, Locate } from "lucide-react"
 export default function ProfileWorkspace() {
   const workspaces = [
     {
@@ -15,47 +16,98 @@ export default function ProfileWorkspace() {
       desc: "Strategic planning and feature prioritization",
       visibility: "PRIVATE",
       time: "1d ago",
+      active: false,
     },
     {
       title: "User Research Hub",
       desc: "Interview notes, synthesis, and insights",
       visibility: "PRIVATE",
       time: "3d ago",
+      active: false,
     },
     {
       title: "Engineering Handoff",
       desc: "Specs, redlines, and developer documentation",
       visibility: "PUBLIC",
       time: "1w ago",
+      active: false,
+    },
+    {
+      title: "Q1 Product Roadmap",
+      desc: "Strategic planning and feature prioritization",
+      visibility: "PRIVATE",
+      time: "1d ago",
+      active: false,
+    },
+    {
+      title: "User Research Hub",
+      desc: "Interview notes, synthesis, and insights",
+      visibility: "PRIVATE",
+      time: "3d ago",
+      active: false,
+    },
+    {
+      title: "Engineering Handoff",
+      desc: "Specs, redlines, and developer documentation",
+      visibility: "PUBLIC",
+      time: "1w ago",
+      active: false,
+    },
+    {
+      title: "Q1 Product Roadmap",
+      desc: "Strategic planning and feature prioritization",
+      visibility: "PRIVATE",
+      time: "1d ago",
+      active: false,
+    },
+    {
+      title: "User Research Hub",
+      desc: "Interview notes, synthesis, and insights",
+      visibility: "PRIVATE",
+      time: "3d ago",
+      active: false,
+    },
+    {
+      title: "Engineering Handoff",
+      desc: "Specs, redlines, and developer documentation",
+      visibility: "PUBLIC",
+      time: "1w ago",
+      active: false,
     },
   ];
 
+const [selected, setSelected] = useState(0);
+
+  const handleSelect = (i: number) => {
+    setSelected(i);
+    };
+
   return (
-    <div className="min-h-screen bg-white px-6 py-8">
-      <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10">
+    <div className="min-h-screen w-full bg-white px-6 lg:px-15 xl:px-20">
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[35%_1fr] gap-10">
 
         {/* Sidebar */}
-        <aside className="space-y-6">
+        <aside className="h-full space-y-6 flex flex-col items-start sm:pt-5 lg:pt-20 lg:pr-30 lg:border-r lg:border-gray-200">
           <img
             src="https://i.pravatar.cc/120?img=47"
             alt="profile"
-            className="w-24 h-24 rounded-full"
+            className="w-30 h-30 rounded-full"
           />
 
-          <div>
-            <h2 className="text-2xl font-semibold">Sarah Jenkins</h2>
+          <div className="space-y-1 tracking-wider">
+            <h2 className="text-4xl font-semibold">Sarah Jenkins</h2>
             <p className="text-gray-500">Product Designer & Art Director</p>
           </div>
 
-          <p className="text-gray-600">
-            Crafting digital experiences with a focus on typography and minimal aesthetics.
+          <p className="text-gray-600 font-1" style={{ fontSize: "22px", lineHeight: "1.6" }}>
+            Crafting digital experiences with a focus on typography and minimal aesthetics. Currently leading design systems at Arch. previously at Studio Mono.
           </p>
 
-          <ul className="text-sm text-gray-600 space-y-2">
-            <li>📍 San Francisco, CA</li>
-            <li>💼 Head of Design, Arch</li>
-            <li>✉️ sarah@arch.design</li>
-            <li>🌐 sarahjenkins.io</li>
+          <ul className="text-normal text-gray-600 space-y-4">
+            <li> <Locate className="w-4 h-4 inline mr-1" /> San Francisco, CA</li>
+            <li> <Folder className="w-4 h-4 inline mr-1" /> Head of Design, Arch</li>
+            <li> <File className="w-4 h-4 inline mr-1" /> sarah@arch.design</li>
+            <li> <Globe className="w-4 h-4 inline mr-1" /> sarahjenkins.io</li>
           </ul>
 
           <div className="flex items-center gap-2 text-sm text-green-600">
@@ -65,7 +117,7 @@ export default function ProfileWorkspace() {
         </aside>
 
         {/* Main */}
-        <main>
+        <main className="h-full py-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-semibold">Workspaces</h1>
             <button className="bg-yellow-400 px-4 py-2 text-sm font-medium rounded">
@@ -73,12 +125,15 @@ export default function ProfileWorkspace() {
             </button>
           </div>
 
-          <div className="divide-y">
+          <div className="py-4 border-t border-gray-800">
             {workspaces.map((w, i) => (
               <div
                 key={i}
-                className={`py-5 flex items-start justify-between gap-4 ${
-                  w.active ? "border-l-4 border-yellow-400 pl-4" : ""
+                onClick={() => {
+                  handleSelect(i);
+                }}
+                className={`py-5 flex items-start justify-between px-4 py-8 gap-6 mt-4 hover:cursor-pointer border-b-1 ${
+                  selected === i ? "border-l-4 border-yellow-400 pl-4" : ""
                 }`}
               >
                 <div>
