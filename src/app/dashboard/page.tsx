@@ -4,6 +4,7 @@ import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ProfileWorkspace from '@/features/dashboard/components/dashboard';
 
 const DashboardPage = () => {
     const router = useRouter();
@@ -27,8 +28,9 @@ const DashboardPage = () => {
                 <h1 className="text-3xl font-bold mb-4 text-[#172B4D]">Dashboard</h1>
                 <p className="text-[#42526E] mb-8">Welcome to your dashboard!</p>
                 <div className="flex flex-col space-y-3">
-                    <WorkSpaceSetUp />
-                    <LogoutButton />
+                    {/* <WorkSpaceSetUp />
+                    <LogoutButton /> */}
+                    <ProfileWorkspace />
                 </div>
             </div>
         </div>
