@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { RootState } from "@/lib/store";
 import { updateTokens, logout } from "@/lib/features/auth/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
+import { clearAuthStorage } from "@/lib/features/auth/authStorage";
 
 const TOKEN_REFRESH_BUFFER = 2 * 60 * 1000; // 2 minutes
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -24,6 +25,7 @@ export default function AuthProvider({
     useSelector((state: RootState) => state.auth);
 
   const handleLogout = useCallback(() => {
+    clearAuthStorage();
     dispatch(logout());
     router.replace("/login");
   }, [dispatch, router]);

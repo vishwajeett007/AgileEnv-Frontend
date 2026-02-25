@@ -26,6 +26,46 @@ export function saveAuthToStorage({
   }
 }
 
+export function loadAuthFromStorage() {
+  try {
+    const user = localStorage.getItem("user");
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+    const rememberMe = localStorage.getItem("remember_me");
+    const tokenExpiry = localStorage.getItem("token_expiry");
+    const sessionExpiry = localStorage.getItem("session_expiry");
+
+    if (!user || !accessToken || !refreshToken) {
+      return null;
+    }
+
+    const now = Date.now();
+    const expiry = tokenExpiry ? parseInt(tokenExpiry, 10) : 0;
+
+    // Check if session has expired (for non-rememberMe users)
+    if (rememberMe === "false" && sessionExpiry) {
+      const sessionExp = parseInt(sessionExpiry, 10);
+      if (now > sessionExp) {
+        clearAuthStorage();
+        return null;
+      }
+    }
+
+    return {
+      user: JSON.parse(user),
+      accessToken,
+      refreshToken,
+      rememberMe: rememberMe === "true",
+      tokenExpiry: expiry,
+      isAuthenticated: true,
+    };
+  } catch (error) {
+    console.error("Failed to load auth from storage:", error);
+    clearAuthStorage();
+    return null;
+  }
+}
+
 export function clearAuthStorage() {
   localStorage.removeItem("user");
   localStorage.removeItem("access_token");

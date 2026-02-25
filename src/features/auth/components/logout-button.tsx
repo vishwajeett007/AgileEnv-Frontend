@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/features/auth/auth-Slice";
+import { clearAuthStorage } from "@/lib/features/auth/authStorage";
+import { LogOut } from "lucide-react";
 
 export const LogoutButton = () => {
     const router = useRouter();
@@ -14,6 +15,7 @@ export const LogoutButton = () => {
     const handleLogout = () => {
         setIsLoggingOut(true);
         try {
+            clearAuthStorage();
             dispatch(logout());
             router.push("/login");
         } catch (error) {
@@ -24,12 +26,11 @@ export const LogoutButton = () => {
     };
 
     return (
-        <Button
-            className="mt-4"
+        <LogOut
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
             onClick={handleLogout}
-            disabled={isLoggingOut}
         >
             {isLoggingOut ? "Logging out..." : "Logout"}
-        </Button>
+        </LogOut>
     );
 };

@@ -1,6 +1,10 @@
 "use client";
 import { useState } from "react";
-import{ Globe, File, Folder, Locate } from "lucide-react"
+import{ Globe, File, Folder, Locate, LogOut } from "lucide-react"
+import { LogoutButton } from "@/features/auth/components/logout-button";
+import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
+import { useRouter } from "next/navigation";
+
 export default function ProfileWorkspace() {
   const workspaces = [
     {
@@ -77,17 +81,24 @@ export default function ProfileWorkspace() {
   ];
 
 const [selected, setSelected] = useState(0);
+const [showOnboarding, setShowOnboarding] = useState(false);
+const router = useRouter();
 
   const handleSelect = (i: number) => {
     setSelected(i);
+    router.push(`/workspace/${i}`);
     };
 
+    const addWorkSpace = () => {
+      setShowOnboarding(true);
+    }
+
   return (
-    <div className="min-h-screen w-full bg-white px-6 lg:px-15 xl:px-20">
+    <div className="min-h-screen w-full bg-background px-6 lg:px-15 xl:px-20">
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[35%_1fr] gap-10">
 
         {/* Sidebar */}
-        <aside className="h-full space-y-6 flex flex-col items-start sm:pt-5 lg:pt-20 lg:pr-30 lg:border-r lg:border-gray-200">
+        <aside className="h-full space-y-6 flex flex-col items-start pt-5 lg:pt-20 lg:pr-30 lg:border-r lg:border-border">
           <img
             src="https://i.pravatar.cc/120?img=47"
             alt="profile"
@@ -95,23 +106,23 @@ const [selected, setSelected] = useState(0);
           />
 
           <div className="space-y-1 tracking-wider">
-            <h2 className="text-4xl font-semibold">Sarah Jenkins</h2>
-            <p className="text-gray-500">Product Designer & Art Director</p>
+            <h2 className="text-4xl font-semibold text-foreground">Sarah Jenkins</h2>
+            <p className="text-muted-foreground">Product Designer & Art Director</p>
           </div>
 
-          <p className="text-gray-600 font-1" style={{ fontSize: "22px", lineHeight: "1.6" }}>
+          <p className="text-muted-foreground font-1 md:leading-8 text:lg md:text-xl">
             Crafting digital experiences with a focus on typography and minimal aesthetics. Currently leading design systems at Arch. previously at Studio Mono.
           </p>
 
-          <ul className="text-normal text-gray-600 space-y-4">
+          <ul className="text-normal text-muted-foreground space-y-4">
             <li> <Locate className="w-4 h-4 inline mr-1" /> San Francisco, CA</li>
             <li> <Folder className="w-4 h-4 inline mr-1" /> Head of Design, Arch</li>
             <li> <File className="w-4 h-4 inline mr-1" /> sarah@arch.design</li>
             <li> <Globe className="w-4 h-4 inline mr-1" /> sarahjenkins.io</li>
           </ul>
 
-          <div className="flex items-center gap-2 text-sm text-green-600">
-            <span className="w-2 h-2 bg-green-500 rounded-full" />
+          <div className="flex items-center gap-2 text-md text-[#0057E5] lg:mt-5">
+            <span className="w-2 h-2 bg-[#0057E5] rounded-full" />
             Open for collaborations
           </div>
         </aside>
@@ -119,42 +130,47 @@ const [selected, setSelected] = useState(0);
         {/* Main */}
         <main className="h-full py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-semibold">Workspaces</h1>
-            <button className="bg-yellow-400 px-4 py-2 text-sm font-medium rounded">
+            <h1 className="text-2xl font-semibold text-foreground">Workspaces</h1>
+            <div className="flex items-center gap-4">
+            <button className="bg-[#0057E5] text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-[#0046b8] transition-colors"
+            onClick={addWorkSpace}
+            >
               + New Workspace
             </button>
+            <LogoutButton />
+            </div>
           </div>
 
-          <div className="py-4 border-t border-gray-800">
+          <div className="py-4 border-t border-border">
             {workspaces.map((w, i) => (
               <div
                 key={i}
                 onClick={() => {
                   handleSelect(i);
                 }}
-                className={`py-5 flex items-start justify-between px-4 py-8 gap-6 mt-4 hover:cursor-pointer border-b-1 ${
-                  selected === i ? "border-l-4 border-yellow-400 pl-4" : ""
+                className={`py-5 flex items-start justify-between px-4 py-8 gap-6 mt-4 hover:cursor-pointer border-b ${
+                  selected === i ? "border-l-4 border-[#0057E5] pl-4 bg-[#DAE9FA]/50" : ""
                 }`}
               >
-                <div>
-                  <h3 className="font-medium">
+                <div className="space-y-1">
+                  <h3 className="font-large text-xl text-foreground">
                     {w.title}{" "}
                     {w.status && (
-                      <span className="ml-2 text-xs text-yellow-500">
+                      <span className="ml-2 text-xs text-[#0057E5] font-semibold bg-blue-200 px-1 py-0.5 rounded">
                         {w.status}
                       </span>
                     )}
                   </h3>
-                  <p className="text-sm text-gray-500">{w.desc}</p>
+                  <p className="text-sm text-muted-foreground">{w.desc}</p>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span>{w.time}</span>
                   <span
                     className={`px-2 py-1 rounded text-xs ${
                       w.visibility === "PUBLIC"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-gray-100 text-gray-600"
+                        ? "bg-[#DAE9FA] text-[#0057E5]"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {w.visibility}
@@ -165,6 +181,7 @@ const [selected, setSelected] = useState(0);
           </div>
         </main>
       </div>
+      {showOnboarding && <WorkSpaceSetUp />}
     </div>
   );
 }

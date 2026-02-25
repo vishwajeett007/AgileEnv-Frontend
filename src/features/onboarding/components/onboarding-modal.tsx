@@ -24,7 +24,6 @@ export default function WorkSpaceSetUp() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Open</Button>
             </DialogTrigger>
             <DialogPortal>
                 <DialogContent className={cn(

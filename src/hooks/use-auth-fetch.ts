@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
 import { updateTokens, logout } from "@/lib/features/auth/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
+import { clearAuthStorage } from "@/lib/features/auth/authStorage";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 
@@ -22,6 +23,7 @@ export function useAuthFetch() {
   const authFetch = useCallback(
     async (endpoint: string, options: RequestInit = {}) => {
       if (!accessToken) {
+        clearAuthStorage();
         dispatch(logout());
         router.replace("/login");
         throw new Error("Not authenticated");
@@ -57,6 +59,7 @@ export function useAuthFetch() {
             !result.accessToken ||
             !result.refreshToken
           ) {
+            clearAuthStorage();
             dispatch(logout());
             router.replace("/login");
             throw new Error("Session expired");
@@ -73,6 +76,7 @@ export function useAuthFetch() {
           response = await makeRequest(result.accessToken);
         } catch (error) {
           refreshPromiseRef.current = null;
+          clearAuthStorage();
           dispatch(logout());
           router.replace("/login");
           throw error;
