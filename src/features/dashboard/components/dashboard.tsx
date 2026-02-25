@@ -4,11 +4,13 @@ import{ Globe, File, Folder, Locate, LogOut } from "lucide-react"
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
 import { useRouter } from "next/navigation";
+import { id } from "zod/v4/locales";
 
 export default function ProfileWorkspace() {
   const workspaces = [
     {
       title: "Design System v2",
+      id: "1",
       desc: "Component library and token documentation",
       status: "ACTIVE",
       visibility: "PUBLIC",
@@ -17,6 +19,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Q1 Product Roadmap",
+      id: "2",
       desc: "Strategic planning and feature prioritization",
       visibility: "PRIVATE",
       time: "1d ago",
@@ -24,6 +27,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "User Research Hub",
+      id: "3",
       desc: "Interview notes, synthesis, and insights",
       visibility: "PRIVATE",
       time: "3d ago",
@@ -31,6 +35,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Engineering Handoff",
+      id: "4",
       desc: "Specs, redlines, and developer documentation",
       visibility: "PUBLIC",
       time: "1w ago",
@@ -38,6 +43,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Q1 Product Roadmap",
+      id: "5",
       desc: "Strategic planning and feature prioritization",
       visibility: "PRIVATE",
       time: "1d ago",
@@ -45,6 +51,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "User Research Hub",
+      id: "6",
       desc: "Interview notes, synthesis, and insights",
       visibility: "PRIVATE",
       time: "3d ago",
@@ -52,6 +59,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Engineering Handoff",
+      id: "7",
       desc: "Specs, redlines, and developer documentation",
       visibility: "PUBLIC",
       time: "1w ago",
@@ -59,6 +67,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Q1 Product Roadmap",
+      id: "8",
       desc: "Strategic planning and feature prioritization",
       visibility: "PRIVATE",
       time: "1d ago",
@@ -66,6 +75,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "User Research Hub",
+      id: "9",
       desc: "Interview notes, synthesis, and insights",
       visibility: "PRIVATE",
       time: "3d ago",
@@ -73,6 +83,7 @@ export default function ProfileWorkspace() {
     },
     {
       title: "Engineering Handoff",
+      id: "10",
       desc: "Specs, redlines, and developer documentation",
       visibility: "PUBLIC",
       time: "1w ago",
