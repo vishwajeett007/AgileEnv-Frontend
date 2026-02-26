@@ -1,4 +1,5 @@
-"use client";
+import { toast } from "sonner";
+
 const ONE_HOUR = 60 * 60 * 1000;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -68,6 +69,7 @@ export function loadAuthFromStorage() {
 }
 
 export function clearAuthStorage() {
+  if(typeof window === "undefined") return;
   localStorage.removeItem("user");
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
