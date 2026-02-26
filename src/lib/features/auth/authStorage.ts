@@ -1,5 +1,3 @@
-import { toast } from "sonner";
-
 const ONE_HOUR = 60 * 60 * 1000;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -14,6 +12,7 @@ export function saveAuthToStorage({
   refreshToken: string;
   rememberMe: boolean;
 }) {
+  if(typeof window === "undefined") return;
   localStorage.setItem("user", JSON.stringify(user));
   localStorage.setItem("access_token", accessToken);
   localStorage.setItem("refresh_token", refreshToken);
@@ -30,6 +29,7 @@ export function saveAuthToStorage({
 
 export function loadAuthFromStorage() {
   try {
+    if (typeof window === "undefined") return null;
     const user = localStorage.getItem("user");
     const accessToken = localStorage.getItem("access_token");
     const refreshToken = localStorage.getItem("refresh_token");
