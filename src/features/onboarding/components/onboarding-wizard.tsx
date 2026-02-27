@@ -3,7 +3,7 @@
 import { WorkspaceStepName } from "./Project-steps/workspaceName-step"
 import { WorkspaceStepWork } from "./Project-steps/work-option"
 import { WorkspaceStepFeature } from "./Project-steps/feature-option"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface OnboardingWizardProps {
     step: number;

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/lib/hooks";
-import { logout } from "@/lib/features/auth/auth-Slice";
-import { clearAuthStorage } from "@/lib/features/auth/authStorage";
+import { useAppDispatch } from "@/store/hooks";
+import { logout } from "@/features/auth/store/auth-Slice";
+import { clearAuthStorage } from "@/features/auth/store/authStorage";
 import { LogOut } from "lucide-react";
 
 export const LogoutButton = () => {

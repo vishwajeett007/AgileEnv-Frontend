@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setProfileImage } from '@/lib/features/onboarding/onboarding-Slice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setProfileImage } from '@/features/onboarding/store/onboarding-Slice';
 import {  ProfilePhotoSchema } from '../../schemas';
 import { toast } from 'sonner';
 

@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { forgotPassword, resetPassword } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
-import { useThrottle } from "@/hooks/use-throttle";
+import { useThrottle } from "../../../shared/hooks/use-throttle";
+import { Input } from "@/components/ui/input";
 
 export const VerifyOtpForm = () => {
     const router = useRouter();
@@ -112,7 +113,7 @@ export const VerifyOtpForm = () => {
                     {/* OTP Inputs */}
                     <div className="flex justify-between gap-2">
                         {otp.map((data, index) => (
-                            <input
+                            <Input
                                 key={index}
                                 type="text"
                                 maxLength={1}
@@ -121,7 +122,7 @@ export const VerifyOtpForm = () => {
                                 onChange={(e) => handleChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
                                 onPaste={handlePaste}
-                                className="h-12 w-12 rounded-lg bg-gray-200 text-center text-xl font-semibold text-gray-900 outline outline-1 outline-blue-500 outline-solid focus:ring-2 focus:ring-[#0057E5]"
+                                className="h-12 w-12 rounded-lg bg-gray-200 text-center text-xl font-semibold text-gray-900 outline-1 outline-blue-500 outline-solid focus:ring-2 focus:ring-[#0057E5]"
                             />
                         ))}
                     </div>

@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { resetOnboarding, setWorkPreferences } from "@/lib/features/onboarding/onboarding-Slice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { resetOnboarding, setWorkPreferences } from "@/features/onboarding/store/onboarding-Slice";
 import { useRouter } from "next/navigation";
-import { useAuthFetch } from "@/hooks/use-auth-fetch";
+import { useAuthFetch } from "../../../../shared/hooks/use-auth-fetch";
 
 const WorkPreference = () => {
 

@@ -3,10 +3,10 @@
 import { useEffect, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/lib/store";
-import { updateTokens, logout } from "@/lib/features/auth/auth-Slice";
+import { RootState } from "@/store/store";
+import { updateTokens, logout } from "@/features/auth/store/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
-import { clearAuthStorage } from "@/lib/features/auth/authStorage";
+import { clearAuthStorage } from "@/features/auth/store/authStorage";
 
 const TOKEN_REFRESH_BUFFER = 2 * 60 * 1000; // 2 minutes
 const ONE_DAY = 24 * 60 * 60 * 1000;

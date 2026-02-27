@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
-import { setWorkspaceRole } from "@/lib/features/onboarding/onboarding-Slice"
-import { useAppDispatch, useAppSelector } from "@/lib/hooks"
+import { cn } from "@/shared/utils"
+import { setWorkspaceRole } from "@/features/onboarding/store/onboarding-Slice"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
 
 interface WorkspaceStepProps {
     onNext: () => void

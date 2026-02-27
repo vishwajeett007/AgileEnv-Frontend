@@ -22,7 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { register } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
-import { useThrottle } from "@/hooks/use-throttle";
+import { useThrottle } from "../../../shared/hooks/use-throttle";
 
 export const RegisterForm = () => {
     const router = useRouter();

@@ -5,8 +5,8 @@ import { useEffect, Suspense, useRef } from "react";
 import { googleCallback, githubCallback } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/lib/hooks";
-import { setCredentials } from "@/lib/features/auth/auth-Slice";
+import { useAppDispatch } from "@/store/hooks";
+import { setCredentials } from "@/features/auth/store/auth-Slice";
 
 const CallbackContent = () => {
     const router = useRouter();

@@ -67,8 +67,8 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "@/components/ui/sonner";
-import StoreProvider from "@/lib/providers/ReduxProvider";
-import TokenRefreshProvider from "@/lib/providers/TokenRefreshProvider";
+import StoreProvider from "@/providers/ReduxProvider";
+import TokenRefreshProvider from "@/providers/TokenRefreshProvider";
 
 export default function RootLayout({
   children,

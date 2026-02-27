@@ -21,7 +21,7 @@ import { useSearchParams } from "next/navigation";
 import { completeReset } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { ResetCompleteSchema } from "@/features/auth/schemas";
-import { useThrottle } from "@/hooks/use-throttle";
+import { useThrottle } from "../../../shared/hooks/use-throttle";
 
 export const NewPasswordForm = () => {
     const [success, setSuccess] = useState(false);

@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
-import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { setSelectedTools, setActiveTool, resetOnboarding } from "@/lib/features/onboarding/onboarding-Slice"
+import { cn } from "@/shared/utils"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { setSelectedTools, setActiveTool, resetOnboarding } from "@/features/onboarding/store/onboarding-Slice"
 import { DialogClose } from "@radix-ui/react-dialog"
 
 

@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { VisuallyHidden } from "@/components/ui/visually-hidden"
 import OnboardingWizard from "./onboarding-wizard";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 export default function WorkSpaceSetUp() {
 

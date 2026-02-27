@@ -22,9 +22,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
-import { useThrottle } from "@/hooks/use-throttle";
-import { useAppDispatch } from "@/lib/hooks";
-import { setCredentials } from "@/lib/features/auth/auth-Slice";
+import { useThrottle } from "../../../shared/hooks/use-throttle";
+import { useAppDispatch } from "@/store/hooks";
+import { setCredentials } from "@/features/auth/store/auth-Slice";
 
 export const LoginForm = () => {
     const router = useRouter();

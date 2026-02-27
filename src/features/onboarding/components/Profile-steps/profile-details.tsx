@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setFullName, setProfileWorkRole } from "@/lib/features/onboarding/onboarding-Slice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setFullName, setProfileWorkRole } from "@/features/onboarding/store/onboarding-Slice";
 import { ProfileNameSchema, RoleSelectionSchema } from "../../schemas";
 import { toast } from "sonner";
 const ProfileDetails = (props: { step: number; handleNext: () => void; }) => {

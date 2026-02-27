@@ -1,10 +1,10 @@
 "use client";
 
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/lib/store";
-import { updateTokens, logout } from "@/lib/features/auth/auth-Slice";
+import { RootState } from "@/store/store";
+import { updateTokens, logout } from "@/features/auth/store/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
-import { clearAuthStorage } from "@/lib/features/auth/authStorage";
+import { clearAuthStorage } from "@/features/auth/store/authStorage";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 

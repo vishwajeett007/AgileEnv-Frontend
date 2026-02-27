@@ -1,9 +1,9 @@
 'use client'
 import { useRef } from 'react'
 import { Provider } from 'react-redux'
-import { makeStore, AppStore } from '@/lib/store'
-import { hydrateAuth } from '@/lib/features/auth/auth-Slice'
-import { loadAuthFromStorage } from '@/lib/features/auth/authStorage'
+import { makeStore, AppStore } from '@/store/store'
+import { hydrateAuth } from '@/features/auth/store/auth-Slice'
+import { loadAuthFromStorage } from '@/features/auth/store/authStorage'
 
 export default function StoreProvider({
     children,
