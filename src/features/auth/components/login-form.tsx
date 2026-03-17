@@ -23,15 +23,13 @@ import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { useThrottle } from "../../../shared/hooks/use-throttle";
-import { useAppDispatch } from "@/store/hooks";
-import { setCredentials } from "@/features/auth/store/auth-Slice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { setAuthCookies } from "@/lib/auth-cookies";
 
 export const LoginForm = () => {
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    const queryClient = useQueryClient();
     const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
@@ -42,31 +40,34 @@ export const LoginForm = () => {
         },
     });
 
-    const onSubmit = useCallback(async (values: z.infer<typeof LoginSchema>) => {
-        setLoading(true);
-        try {
-            const data = await login(values);
-
+    const loginMutation = useMutation({
+        mutationFn: login,
+        onSuccess: (data, variables) => {
             if (data?.success) {
                 toast.success("Login successful");
-                dispatch(setCredentials({
-                    user: data.data.user,
-                    accessToken: data.data.access_token,
-                    refreshToken: data.data.refresh_token,
-                    rememberMe: rememberMe,
-                }));
+                setAuthCookies(
+                    data.data.access_token,
+                    data.data.refresh_token,
+                    data.data.user,
+                    variables.rememberMe
+                );
+                queryClient.setQueryData(['user'], data.data.user);
                 router.push("/dashboard");
             } else {
                 const errorMessage = typeof data?.error === "string" ? data.error : "Login failed";
                 console.error(errorMessage);
                 toast.error(errorMessage);
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error logging in", error);
-        } finally {
-            setLoading(false);
+            toast.error("An error occurred during login.");
         }
-    }, [router, dispatch, rememberMe]);
+    });
+
+    const onSubmit = useCallback(async (values: z.infer<typeof LoginSchema>) => {
+        loginMutation.mutate(values);
+    }, [loginMutation]);
 
     const throttledSubmit = useThrottle(onSubmit, 1000);
 
@@ -93,7 +94,7 @@ export const LoginForm = () => {
                                             placeholder="Enter your email or username"
                                             type="text" // Allow username
                                             className="h-12 border-0 bg-gray-100"
-                                            disabled={loading}
+                                            disabled={form.formState.isSubmitting || loginMutation.isPending}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -113,7 +114,7 @@ export const LoginForm = () => {
                                                 placeholder="Enter password"
                                                 type={showPassword ? "text" : "password"}
                                                 className="h-12 border-0 bg-gray-100 pr-10"
-                                                disabled={loading}
+                                                disabled={form.formState.isSubmitting || loginMutation.isPending}
                                             />
                                         </FormControl>
                                         <button
@@ -142,10 +143,9 @@ export const LoginForm = () => {
                                             className="border-gray-400"
                                             checked={field.value}
                                             onCheckedChange={(checked) => {
-                                                setRememberMe(checked as boolean);
                                                 field.onChange(checked);
                                             }}
-                                            disabled={loading}
+                                            disabled={form.formState.isSubmitting || loginMutation.isPending}
                                         />
                                     </FormControl>
                                     <label
@@ -165,9 +165,9 @@ export const LoginForm = () => {
 
                     <Button type="submit"
                         className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium"
-                        disabled={loading}
+                        disabled={form.formState.isSubmitting || loginMutation.isPending}
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        {form.formState.isSubmitting || loginMutation.isPending ? "Logging in..." : "Login"}
                     </Button>
                 </form>
             </Form>

@@ -10,13 +10,13 @@ import { toast } from "sonner";
 import { useThrottle } from "../../../shared/hooks/use-throttle";
 import { CardWrapper } from "./card-wrapper";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
 
 export const VerifyRegistrationForm = () => {
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
 
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
-    const [loading, setLoading] = useState(false);
     const [timer, setTimer] = useState(30);
     const [success, setSuccess] = useState(false);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -61,14 +61,9 @@ export const VerifyRegistrationForm = () => {
         }
     };
 
-    const onVerify = async () => {
-        const otpCode = otp.join("");
-        if (otpCode.length !== 6 || !email) return;
-
-        setLoading(true);
-        try {
-            const data = await verifyRegistration(email, otpCode);
-
+    const verifyMutation = useMutation({
+        mutationFn: (otpCode: string) => verifyRegistration(email as string, otpCode),
+        onSuccess: (data) => {
             if (data.success) {
                 setSuccess(true);
                 toast.success("Verification successful");
@@ -76,30 +71,41 @@ export const VerifyRegistrationForm = () => {
                 console.error(data.error || "Verification failed");
                 toast.error(data.error || "Verification failed");
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error verifying otp", error);
             toast.error("Verification failed");
-        } finally {
-            setLoading(false);
         }
-    };
+    });
 
-    const onResend = async () => {
-        if (timer > 0 || !email) return;
-        setTimer(30);
-
-        try {
-            const res = await resendRegistrationOtp(email);
+    const resendMutation = useMutation({
+        mutationFn: () => resendRegistrationOtp(email as string),
+        onSuccess: (res) => {
             if (res.success) {
                 toast.success("OTP Resent");
             } else {
                 console.error(res.error || "Failed to resend OTP");
                 toast.error(res.error || "Failed to resend OTP");
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error resending otp", error);
             toast.error("Failed to resend OTP");
         }
+    });
+
+    const onVerify = async () => {
+        const otpCode = otp.join("");
+        if (otpCode.length !== 6 || !email) return;
+
+        verifyMutation.mutate(otpCode);
+    };
+
+    const onResend = async () => {
+        if (timer > 0 || !email) return;
+        setTimer(30);
+
+        resendMutation.mutate();
     };
 
     const throttledVerify = useThrottle(onVerify, 2000);
@@ -162,7 +168,7 @@ export const VerifyRegistrationForm = () => {
                                 onChange={(e) => handleChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
                                 onPaste={handlePaste}
-                                disabled={loading}
+                                disabled={verifyMutation.isPending || resendMutation.isPending}
                                 autoFocus={index === 0}
                                 className=" h-10 w-10 sm:h-12 sm:w-12 rounded-lg bg-gray-200 text-center text-xl font-semibold text-gray-900 outline-1 outline-blue-500 outline-solid focus:ring-2 focus:ring-[#0057E5]"
                             />
@@ -173,9 +179,9 @@ export const VerifyRegistrationForm = () => {
                         className="w-full bg-[#0057E5] text-lg font-medium hover:bg-[#0046b8]"
                         size="lg"
                         onClick={throttledVerify}
-                        disabled={loading}
+                        disabled={verifyMutation.isPending || resendMutation.isPending}
                     >
-                        {loading ? "Verifying..." : "Enter OTP"}
+                        {verifyMutation.isPending ? "Verifying..." : "Enter OTP"}
                     </Button>
 
 
@@ -184,7 +190,7 @@ export const VerifyRegistrationForm = () => {
                         className="w-full border-blue-200 text-[#0057E5] hover:bg-blue-50"
                         size="lg"
                         onClick={throttledResend}
-                        disabled={loading || timer > 0}
+                        disabled={verifyMutation.isPending || resendMutation.isPending || timer > 0}
                     >
                         {timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}
                     </Button>

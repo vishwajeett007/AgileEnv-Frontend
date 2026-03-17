@@ -22,6 +22,7 @@ import { completeReset } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { ResetCompleteSchema } from "@/features/auth/schemas";
 import { useThrottle } from "../../../shared/hooks/use-throttle";
+import { useMutation } from "@tanstack/react-query";
 
 export const NewPasswordForm = () => {
     const [success, setSuccess] = useState(false);
@@ -40,17 +41,9 @@ export const NewPasswordForm = () => {
         },
     });
 
-    const [loading, setLoading] = useState(false);
-    const onSubmit = async (values: z.infer<typeof ResetCompleteSchema>) => {
-        if (!token) {
-            console.error("Missing reset token!");
-            toast.error("Missing reset token!");
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const res = await completeReset(values);
+    const resetMutation = useMutation({
+        mutationFn: completeReset,
+        onSuccess: (res) => {
             if (res.success) {
                 setSuccess(true);
                 toast.success("Password reset successful!");
@@ -58,12 +51,21 @@ export const NewPasswordForm = () => {
                 const errorMessage = typeof res?.error === "string" ? res.error : "Failed to reset password!";
                 toast.error(errorMessage);
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Failed to reset password", error);
             toast.error("Something went wrong!");
-        } finally {
-            setLoading(false);
         }
+    });
+
+    const onSubmit = async (values: z.infer<typeof ResetCompleteSchema>) => {
+        if (!token) {
+            console.error("Missing reset token!");
+            toast.error("Missing reset token!");
+            return;
+        }
+
+        resetMutation.mutate(values);
     };
 
     const throttledSubmit = useThrottle(onSubmit, 2000);
@@ -170,9 +172,9 @@ export const NewPasswordForm = () => {
                     </div>
                     <Button type="submit"
                         className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-12 text-md font-medium"
-                        disabled={loading}
+                        disabled={form.formState.isSubmitting || resetMutation.isPending}
                     >
-                        {loading ? "Updating..." : "Done"}
+                        {form.formState.isSubmitting || resetMutation.isPending ? "Updating..." : "Done"}
                     </Button>
                 </form>
             </Form>

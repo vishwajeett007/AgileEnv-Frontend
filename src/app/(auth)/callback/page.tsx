@@ -5,12 +5,10 @@ import { useEffect, Suspense, useRef } from "react";
 import { googleCallback, githubCallback } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/store/hooks";
-import { setCredentials } from "@/features/auth/store/auth-Slice";
+import { setAuthCookies } from "@/lib/auth-cookies";
 
 const CallbackContent = () => {
     const router = useRouter();
-    const dispatch = useAppDispatch();
     const searchParams = useSearchParams();
 
     const code = searchParams.get("code");
@@ -41,11 +39,7 @@ const CallbackContent = () => {
             const res = await (provider === "google" ? googleCallback(code, state) : githubCallback(code, state));
 
             if (res.success) {
-                dispatch(setCredentials({
-                    user: res.user,
-                    accessToken: res.accessToken!,
-                    refreshToken: res.refreshToken!,
-                }));
+                setAuthCookies(res.accessToken!, res.refreshToken!, res.user);
                 toast.success("Successfully logged in!", { id: "auth-toast" });
                 router.push("/dashboard");
             } else {

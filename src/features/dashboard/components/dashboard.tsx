@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import{ Globe, File, Folder, Locate, LogOut } from "lucide-react"
+import { Globe, File, Folder, Locate, LogOut } from "lucide-react"
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
 import { useRouter } from "next/navigation";
 import { id } from "zod/v4/locales";
 
-export default function ProfileWorkspace() {
+export default function Dashbaord() {
   const workspaces = [
     {
       title: "Design System v2",
@@ -91,18 +91,18 @@ export default function ProfileWorkspace() {
     },
   ];
 
-const [selected, setSelected] = useState(0);
-const [showOnboarding, setShowOnboarding] = useState(false);
-const router = useRouter();
+  const [selected, setSelected] = useState(0);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const router = useRouter();
 
   const handleSelect = (i: number) => {
     setSelected(i);
     router.push(`/workspace/${i}`);
-    };
+  };
 
-    const addWorkSpace = () => {
-      setShowOnboarding(true);
-    }
+  const addWorkSpace = () => {
+    setShowOnboarding(true);
+  }
 
   return (
     <div className="min-h-screen w-full bg-background px-6 lg:px-15 xl:px-20">
@@ -143,12 +143,12 @@ const router = useRouter();
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-semibold text-foreground">Workspaces</h1>
             <div className="flex items-center gap-4">
-            <button className="bg-[#0057E5] text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-[#0046b8] transition-colors"
-            onClick={addWorkSpace}
-            >
-              + New Workspace
-            </button>
-            <LogoutButton />
+              <button className="bg-[#0057E5] text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-[#0046b8] transition-colors"
+                onClick={addWorkSpace}
+              >
+                + New Workspace
+              </button>
+              <LogoutButton />
             </div>
           </div>
 
@@ -159,9 +159,8 @@ const router = useRouter();
                 onClick={() => {
                   handleSelect(i);
                 }}
-                className={`py-5 flex items-start justify-between px-4 py-8 gap-6 mt-4 hover:cursor-pointer border-b ${
-                  selected === i ? "border-l-4 border-[#0057E5] pl-4 bg-[#DAE9FA]/50" : ""
-                }`}
+                className={`py-5 flex items-start justify-between px-4 py-8 gap-6 mt-4 hover:cursor-pointer border-b ${selected === i ? "border-l-4 border-[#0057E5] pl-4 bg-[#DAE9FA]/50" : ""
+                  }`}
               >
                 <div className="space-y-1">
                   <h3 className="font-large text-xl text-foreground">
@@ -178,11 +177,10 @@ const router = useRouter();
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span>{w.time}</span>
                   <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      w.visibility === "PUBLIC"
+                    className={`px-2 py-1 rounded text-xs ${w.visibility === "PUBLIC"
                         ? "bg-[#DAE9FA] text-[#0057E5]"
                         : "bg-muted text-muted-foreground"
-                    }`}
+                      }`}
                   >
                     {w.visibility}
                   </span>

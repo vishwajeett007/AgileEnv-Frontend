@@ -8,6 +8,7 @@ import { forgotPassword, resetPassword } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { useThrottle } from "../../../shared/hooks/use-throttle";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
 
 export const VerifyOtpForm = () => {
     const router = useRouter();
@@ -59,31 +60,9 @@ export const VerifyOtpForm = () => {
         }
     };
 
-    const handleResend = async () => {
-        if (timer > 0 || !email) return;
-        setTimer(30);
-
-        try {
-            const res = await forgotPassword({ email });
-
-            if (!res.success) {
-                console.error(res.error || "Failed to resend OTP");
-                toast.error(res.error || "Failed to resend OTP");
-            } else {
-                toast.success("OTP resent successfully");
-            }
-        } catch (error) {
-            console.error("Error resending OTP", error);
-            toast.error("Something went wrong");
-        }
-    };
-
-    const handleVerify = async () => {
-        const otpCode = otp.join("");
-        if (otpCode.length < 6 || !email) return;
-
-        try {
-            const res = await resetPassword({ email: email, otp: otpCode });
+    const verifyMutation = useMutation({
+        mutationFn: (otpCode: string) => resetPassword({ email: email as string, otp: otpCode }),
+        onSuccess: (res) => {
             if (res.success || res.data?.reset_token) {
                 toast.success("OTP verified successfully");
                 router.push(`/reset-password?token=${res.data.reset_token}`)
@@ -91,9 +70,39 @@ export const VerifyOtpForm = () => {
                 console.error(res.error || "Verification Failed!");
                 toast.error(res.error || "Verification Failed!");
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error verifying OTP", error);
+            toast.error("An error occurred during verification.");
         }
+    });
+
+    const resendMutation = useMutation({
+        mutationFn: () => forgotPassword({ email: email as string }),
+        onSuccess: (res) => {
+            if (!res.success) {
+                console.error(res.error || "Failed to resend OTP");
+                toast.error(res.error || "Failed to resend OTP");
+            } else {
+                toast.success("OTP resent successfully");
+            }
+        },
+        onError: (error) => {
+            console.error("Error resending OTP", error);
+            toast.error("Something went wrong");
+        }
+    });
+
+    const handleResend = async () => {
+        if (timer > 0 || !email) return;
+        setTimer(30);
+        resendMutation.mutate();
+    };
+
+    const handleVerify = async () => {
+        const otpCode = otp.join("");
+        if (otpCode.length < 6 || !email) return;
+        verifyMutation.mutate(otpCode);
     };
 
     const throttledVerify = useThrottle(handleVerify, 2000);
@@ -131,9 +140,9 @@ export const VerifyOtpForm = () => {
                         className="w-full bg-[#0057E5] text-lg font-medium hover:bg-[#0046b8]"
                         size="lg"
                         onClick={throttledVerify}
-                        disabled={otp.join("").length < 6}
+                        disabled={otp.join("").length < 6 || verifyMutation.isPending || resendMutation.isPending}
                     >
-                        Enter OTP
+                        {verifyMutation.isPending ? "Verifying..." : "Enter OTP"}
                     </Button>
 
 
@@ -142,7 +151,7 @@ export const VerifyOtpForm = () => {
                         className="w-full border-blue-200 text-[#0057E5] hover:bg-blue-50"
                         size="lg"
                         onClick={throttledResend}
-                        disabled={timer > 0}
+                        disabled={timer > 0 || verifyMutation.isPending || resendMutation.isPending}
                     >
                         {timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}
                     </Button>

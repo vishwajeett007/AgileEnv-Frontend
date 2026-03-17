@@ -1,30 +1,26 @@
 "use client";
 
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
-import { updateTokens, logout } from "@/features/auth/store/auth-Slice";
 import { refreshAuthToken } from "@/features/auth/actions/auth";
-import { clearAuthStorage } from "@/features/auth/store/authStorage";
+import { getAuthCookies, setAuthCookies, clearAuthCookies } from "@/lib/auth-cookies";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function useAuthFetch() {
-  const dispatch = useDispatch();
   const router = useRouter();
-
-  const { accessToken, refreshToken } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const queryClient = useQueryClient();
 
   const refreshPromiseRef = useRef<Promise<any> | null>(null);
 
   const authFetch = useCallback(
     async (endpoint: string, options: RequestInit = {}) => {
+      const { accessToken, refreshToken, user } = getAuthCookies();
+
       if (!accessToken) {
-        clearAuthStorage();
-        dispatch(logout());
+        clearAuthCookies();
+        queryClient.removeQueries({ queryKey: ['user'] });
         router.replace("/login");
         throw new Error("Not authenticated");
       }
@@ -59,25 +55,20 @@ export function useAuthFetch() {
             !result.accessToken ||
             !result.refreshToken
           ) {
-            clearAuthStorage();
-            dispatch(logout());
+            clearAuthCookies();
+            queryClient.removeQueries({ queryKey: ['user'] });
             router.replace("/login");
             throw new Error("Session expired");
           }
 
-          dispatch(
-            updateTokens({
-              accessToken: result.accessToken,
-              refreshToken: result.refreshToken,
-            })
-          );
+          setAuthCookies(result.accessToken, result.refreshToken, user);
 
           // Retry original request
           response = await makeRequest(result.accessToken);
         } catch (error) {
           refreshPromiseRef.current = null;
-          clearAuthStorage();
-          dispatch(logout());
+          clearAuthCookies();
+          queryClient.removeQueries({ queryKey: ['user'] });
           router.replace("/login");
           throw error;
         }
@@ -85,7 +76,7 @@ export function useAuthFetch() {
 
       return response;
     },
-    [accessToken, refreshToken, dispatch, router]
+    [router, queryClient]
   );
 
   return authFetch;

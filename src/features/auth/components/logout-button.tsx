@@ -2,21 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store/hooks";
-import { logout } from "@/features/auth/store/auth-Slice";
-import { clearAuthStorage } from "@/features/auth/store/authStorage";
+import { clearAuthCookies } from "@/lib/auth-cookies";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
 export const LogoutButton = () => {
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    const queryClient = useQueryClient();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const handleLogout = () => {
         setIsLoggingOut(true);
         try {
-            clearAuthStorage();
-            dispatch(logout());
+            clearAuthCookies();
+            queryClient.removeQueries({ queryKey: ['user'] });
             router.push("/login");
         } catch (error) {
             console.error("Logout failed", error);

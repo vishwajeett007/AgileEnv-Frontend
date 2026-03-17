@@ -23,14 +23,14 @@ import { useRouter } from "next/navigation";
 import { register } from "@/features/auth/actions/auth";
 import { toast } from "sonner";
 import { useThrottle } from "../../../shared/hooks/use-throttle";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 export const RegisterForm = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-
-    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -42,13 +42,11 @@ export const RegisterForm = () => {
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-        setLoading(true);
-        try {
-            const res = await register(values);
-
+    const registerMutation = useMutation({
+        mutationFn: register,
+        onSuccess: (res) => {
             if (res.success && res.email) {
-                localStorage.setItem("otpAllowed", "true");
+                Cookies.set("otpAllowed", "true", { expires: 1 / 48 }); // 30 min
                 toast.success("Check your email for verification");
                 router.push(`/verify-email?email=${res.email}`);
             } else {
@@ -56,11 +54,15 @@ export const RegisterForm = () => {
                 console.error(errorMessage);
                 toast.error(errorMessage);
             }
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error("Error submitting form", error);
-        } finally {
-            setLoading(false);
+            toast.error("An error occurred during registration.");
         }
+    });
+
+    const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
+        registerMutation.mutate(values);
     };
 
     const throttledSubmit = useThrottle(onSubmit, 2000);
@@ -87,7 +89,7 @@ export const RegisterForm = () => {
                                         {...field}
                                         placeholder="abc"
                                         className="h-10 border-0 bg-gray-100"
-                                        disabled={loading}
+                                        disabled={form.formState.isSubmitting || registerMutation.isPending}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -106,7 +108,7 @@ export const RegisterForm = () => {
                                         placeholder="Enter your email"
                                         type="email"
                                         className="h-10 border-0 bg-gray-100"
-                                        disabled={loading}
+                                        disabled={form.formState.isSubmitting || registerMutation.isPending}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -126,7 +128,7 @@ export const RegisterForm = () => {
                                             placeholder="Enter your password"
                                             type={showPassword ? "text" : "password"}
                                             className="h-10 border-0 bg-gray-100 pr-10"
-                                            disabled={loading}
+                                            disabled={form.formState.isSubmitting || registerMutation.isPending}
                                             onFocus={() => setIsPasswordFocused(true)}
                                             onBlur={() => setIsPasswordFocused(false)}
                                         />
@@ -171,7 +173,7 @@ export const RegisterForm = () => {
                                             placeholder="Re-enter your password"
                                             type={showConfirmPassword ? "text" : "password"}
                                             className="h-10 border-0 bg-gray-100 pr-10"
-                                            disabled={loading}
+                                            disabled={form.formState.isSubmitting || registerMutation.isPending}
                                         />
                                     </FormControl>
                                     <button
@@ -200,9 +202,9 @@ export const RegisterForm = () => {
 
                     <Button type="submit"
                         className="w-full bg-[#0057E5] hover:bg-[#0046b8] text-white h-10 text-sm mt-2"
-                        disabled={loading}
+                        disabled={form.formState.isSubmitting || registerMutation.isPending}
                     >
-                        {loading ? "Signing up..." : "Sign up"}
+                        {form.formState.isSubmitting || registerMutation.isPending ? "Signing up..." : "Sign up"}
                     </Button>
                 </form>
             </Form>
