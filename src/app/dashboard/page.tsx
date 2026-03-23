@@ -4,22 +4,22 @@ import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import ProfileWorkspace from '@/features/dashboard/components/dashboard';
+import Dashboard from '@/features/dashboard/components/dashboard';
 
 const DashboardPage = () => {
-    const router = useRouter();
-    const [isChecking, setIsChecking] = useState(true);
+    // const router = useRouter();
+    // const [isChecking, setIsChecking] = useState(true);
 
-    useEffect(() => {
-        if (!localStorage.getItem("access_token")) {
-           router.push("/login");
-           localStorage.clear();
-        } else {
-            setIsChecking(false);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (!localStorage.getItem("access_token")) {
+    //        router.push("/login");
+    //        localStorage.clear();
+    //     } else {
+    //         setIsChecking(false);
+    //     }
+    // }, []);
 
-    if (isChecking) return null;
+    // if (isChecking) return null;
 
 
     return (
@@ -32,7 +32,7 @@ const DashboardPage = () => {
                     <LogoutButton />
                 </div>
             </div> */}
-            <ProfileWorkspace />
+            <Dashboard />
         </div>
     );
 }
