@@ -1,36 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogPortal,
-    DialogTitle,
-    DialogTrigger
+    DialogTitle
 } from "../../../components/ui/dialog"
-import { Button } from "@/components/ui/button";
 import { VisuallyHidden } from "@/components/ui/visually-hidden"
 import OnboardingWizard from "./onboarding-wizard";
 import { cn } from "@/shared/utils";
 
-export default function WorkSpaceSetUp() {
+interface WorkSpaceSetUpProps {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
 
-    const [open, setOpen] = useState(true);
+export default function WorkSpaceSetUp({ open: controlledOpen, onOpenChange }: WorkSpaceSetUpProps) {
+
+    const [internalOpen, setInternalOpen] = useState(true);
     const [step, setStep] = useState(0);
+    const isControlled = controlledOpen !== undefined;
+    const open = isControlled ? controlledOpen : internalOpen;
 
+    useEffect(() => {
+        if (!open) {
+            setStep(0);
+        }
+    }, [open]);
 
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!isControlled) {
+            setInternalOpen(nextOpen);
+        }
+
+        onOpenChange?.(nextOpen);
+    };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogPortal>
                 <DialogContent className={cn(
-                    "w-full transition-all duration-300 lg:max-w-[46rem] xl:max-w-[45rem]  lg:px-16",
+                    "w-full transition-all duration-300 lg:max-w-[46rem] xl:max-w-[45rem] lg:px-16",
                     step === 2 ? "p-1 lg:max-w-[64rem] xl:max-w-[64rem]" : "lg:max-w-[32rem]"
                 )}
-                    showCloseButton={true}//change it later
+                    showCloseButton={true}
                     onInteractOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
                 >

@@ -1,41 +1,14 @@
 "use client";
 
-import WorkSpaceSetUp from "@/features/onboarding/components/onboarding-modal";
-import { LogoutButton } from "@/features/auth/components/logout-button";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Dashboard from '@/features/dashboard/components/dashboard';
+import Dashboard from "@/features/dashboard/components/dashboard";
 
 const DashboardPage = () => {
-    // const router = useRouter();
-    // const [isChecking, setIsChecking] = useState(true);
-
-    // useEffect(() => {
-    //     if (!localStorage.getItem("access_token")) {
-    //        router.push("/login");
-    //        localStorage.clear();
-    //     } else {
-    //         setIsChecking(false);
-    //     }
-    // }, []);
-
-    // if (isChecking) return null;
-
-
-    return (
-        <div className="w-full min-h-screen bg-[#FAFBFC]">
-            {/* <div className="bg-white p-10 rounded-lg shadow-sm border border-[#dfe1e6] text-center max-w-md">
-                <h1 className="text-3xl font-bold mb-4 text-[#172B4D]">Dashboard</h1>
-                <p className="text-[#42526E] mb-8">Welcome to your dashboard!</p>
-                <div className="flex flex-col space-y-3">
-                    <WorkSpaceSetUp />
-                    <LogoutButton />
-                </div>
-            </div> */}
-            <Dashboard />
-        </div>
-    );
-}
+  return (
+    <div className="w-full min-h-screen bg-[#FAFBFC]">
+      <Dashboard />
+    </div>
+  );
+};
 
 export default DashboardPage;
 
