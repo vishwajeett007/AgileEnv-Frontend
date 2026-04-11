@@ -17,12 +17,9 @@ export function WorkspaceListItem({
     <button
       type="button"
       onClick={() => onSelect(workspace.id)}
-      className={cn(
-        "mt-4 flex w-full items-start justify-between gap-6 border-b px-4 py-8 text-left",
-        isSelected && "border-l-4 border-[#0057E5] bg-[#DAE9FA]/50 pl-4"
-      )}
+      className="mt-4 flex w-full items-start justify-between gap-6 border-b px-4 py-8 text-left hover:border-l-4 hover:border-[#0057E5] hover:bg-[#DAE9FA]/50 hover:pl-4"
     >
-      <div className="space-y-1">
+      <div className="space-y-1 hover:bg-muted/50">
         <h3 className="text-xl text-foreground">
           {workspace.title}
           {workspace.status ? (
