@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     ];
   },
   experimental: {},
+  images: {
+    domains: ["i.pravatar.cc"],
+  },
 };
 
 export default nextConfig;

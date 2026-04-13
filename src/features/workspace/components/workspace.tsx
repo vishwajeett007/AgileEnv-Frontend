@@ -1,12 +1,8 @@
-"use client";
-
 import Link from 'next/link';
-import { Clock, Link as LinkIcon } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { Clock, Link as LinkIcon, Filter } from 'lucide-react';
 
-
-export function Workspace() {
-    const params = useParams();
+export function Workspace({ workspaceId }: { workspaceId: string }) {
+    console.log("workspaceId in Workspace component:", workspaceId);
     const issues = [
         { id: 1, title: 'Fix login bug', description: 'Users are unable to log in with correct credentials.', status: 'In Progress', LastUpdate: 'today' },
         { id: 2, title: 'Update user profile page', description: 'Redesign the user profile page for better UX.', status: 'In Progress', LastUpdate: 'today' },
@@ -17,14 +13,19 @@ export function Workspace() {
         { id: 1, workspaceMemberName: 'John Doe', activity: 'commented on issue #123', timestamp: '2 hours ago' },
         { id: 2, workspaceMemberName: 'Jane Smith', activity: 'updated the status of issue #456 to "In Progress"', timestamp: '4 hours ago' },
         { id: 3, workspaceMemberName: 'Michael Brown', activity: 'created a new issue #789', timestamp: '1 day ago' },
-        { id: 4, workspaceMemberName: 'John Doe', activity: 'commented on issue #123', timestamp: '2 hours ago' },
-        { id: 5, workspaceMemberName: 'Jane Smith', activity: 'updated the status of issue #456 to "In Progress"', timestamp: '4 hours ago' },
-        { id: 6, workspaceMemberName: 'Michael Brown', activity: 'created a new issue #789', timestamp: '1 day ago' }
+        { id: 4, workspaceMemberName: 'John Doe', activity: 'commented on issue #13', timestamp: '2 days ago' },
+        { id: 5, workspaceMemberName: 'Jane Smith', activity: 'updated the status of issue #456 to "In Progress"', timestamp: '4 days ago' },
+        { id: 6, workspaceMemberName: 'Michael Brown', activity: 'created a new issue #78', timestamp: '6 days ago' }
+    ];
+    const projects = [
+        { id: 1, name: 'Mobile App Rebrand', phase: 'UI Implementation and asset delivery.', status: 'In Progress' },
+        { id: 2, name: 'Website Redesign', phase: 'Planning and wireframing.', status: 'Planning' },
+        { id: 3, name: 'API Development', phase: 'Paused due to resource constraints.', status: 'Paused' },
     ];
     
     return (
         <div className='flex justify-center items-center'>
-            <div className='w-full max-w-6xl h-[calc(100vh-61px)] flex justify-around gap-6 p-5'>
+            <div className='w-full max-w-6xl h-[calc(100vh-61px)] flex flex-col md:flex-row justify-around gap-6 p-5'>
                 <div className='flex flex-col max-w-4xl'>
                     <div className='pb-10'>
                         <ul className='flex font-bold list-none gap-5 pb-3 border-b'>
@@ -37,33 +38,28 @@ export function Workspace() {
                     {/* Recent Projects */}
                     <div className='flex justify-between pr-3'>
                         <h2 className='text-xl font-bold'>Recent Projects</h2>
-                        <Link href={`/workspace/${params.workspaceId}/project/1`} className='text-blue-500 hover:underline'>
+                        <Link href={`/workspace/${workspaceId}/project/1`} className='text-blue-500 hover:underline'>
                             <LinkIcon className='inline mr-2' />
                             View All
                         </Link>
                     </div>
-                    <div className='flex pt-4 pb-10 gap-3'>
-                        <div className=' flex flex-col border rounded-md p-4 bg-gray-100 gap-2'>
-                            <h2 className='font-medium pb-1'>Mobile App Rebrand</h2>
-                            <p className='text-sm text-gray-500'>Phase: UI Implementation and asset delivery.</p>
-                            <div className='w-18 bg-gray-300 p-1 text-xs rounded-xs'>In Progress</div>
-                        </div>
-
-                        <div className='flex flex-col border rounded-md p-4 bg-gray-100 gap-2'>
-                            <h2 className='font-medium pb-1'>Mobile App Rebrand</h2>
-                            <p className='text-sm text-gray-500'>Phase: UI Implementation and asset delivery.</p>
-                            <div className='w-15 bg-gray-300 p-1 text-xs rounded-xs'>Planning</div>
-
-                        </div>
-                        <div className='flex flex-col border rounded-md p-4 bg-gray-100 gap-2'>
-                            <h2 className='font-medium pb-1'>Mobile App Rebrand</h2>
-                            <p className='text-sm text-gray-500'>Phase: UI Implementation and asset delivery.</p>
-                            <div className='w-12 bg-gray-300 p-1 text-xs rounded-xs'>Paused</div>
-                        </div>
+                    <div className='flex flex-col sm:flex-row pt-4 pb-10 gap-3'>
+                        {projects.map((project) => (
+                            <Link key={project.id} href={`/workspace/${workspaceId}/project/${project.id}`} className='flex flex-col border rounded-md p-4 bg-gray-100 gap-2 hover:bg-gray-200 transition cursor-pointer hover:scale-105'>
+                                <h2 className='font-medium pb-1'>{project.name}</h2>
+                                <p className='text-sm text-gray-500'>Phase: {project.phase}</p>
+                                <div>
+                                <span className='w-full mx-auto bg-gray-300 p-1 text-xs rounded-xs'>{project.status}</span>
+                                </div>
+                            </Link>
+                        ))}
                     </div>
-
+                        
                     {/* Assigned Issues */}
-                    <h2 className='text-xl font-bold'>Assigned to Me</h2>
+                    <div className='flex justify-between pr-3'>
+                      <h2 className='text-xl font-bold'>Assigned to Me</h2>
+                        <button className='flex gap-2 p-1 bg-gray-200/60 rounded-xs px-2 '><Filter/>Filter</button>
+                    </div>
                     <div className='border rounded-md mt-5 bg-gray-100'>
                         {issues.map((issue) => (
                             <div key={issue.id} className='flex items-center justify-between gap-4 p-2 border-b'>

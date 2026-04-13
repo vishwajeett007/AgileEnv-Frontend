@@ -1,12 +1,10 @@
-import React from 'react'
 import Workspace from "@/features/workspace/components/workspace";
 
-function WorkSpace() {
-  return (
-    <>
-      <Workspace />
-    </>
-  )
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ workspaceId: string }>;
+}) {
+  const { workspaceId } = await params;
+  return <Workspace workspaceId={workspaceId} />;
 }
-
-export default WorkSpace;
