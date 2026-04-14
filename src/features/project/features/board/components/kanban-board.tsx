@@ -1,5 +1,5 @@
 "use client"
-import {useState} from 'react'
+import { useState } from 'react'
 // import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Image from 'next/image';
 import { Column, Issue, Assignee } from '../types/kanban';
@@ -11,7 +11,7 @@ function KanbanBoard() {
       {
         "id": "todo",
         "title": "TODO",
-        "count": 4,
+        "count": 2,
         "issues": [
           {
             "id": "AF-128",
@@ -44,7 +44,7 @@ function KanbanBoard() {
       {
         "id": "in-progress",
         "title": "IN PROGRESS",
-        "count": 2,
+        "count": 1,
         "issues": [
           {
             "id": "AF-104",
@@ -62,13 +62,67 @@ function KanbanBoard() {
                 "avatar": "https://i.pravatar.cc/40?img=8"
               }
             ]
+          },
+          {
+            "id": "AF-128",
+            "title": "Implement OAuth2 provider with Refresh Tokens",
+            "label": "ENG",
+            "priority": "high",
+            "comments": 3,
+            "assignees": [
+              {
+                "name": "John Doe",
+                "avatar": "https://i.pravatar.cc/40?img=1"
+              }
+            ]
+          },
+          {
+            "id": "AF-142",
+            "title": "Review dark mode contrast ratios in settings",
+            "label": "DESIGN",
+            "priority": "medium",
+            "comments": 0,
+            "assignees": [
+              {
+                "name": "Sarah Kim",
+                "avatar": "https://i.pravatar.cc/40?img=5"
+              }
+            ]
+          },
+
+          // ➕ NEW ISSUES
+          {
+            "id": "AF-150",
+            "title": "Fix login API error handling",
+            "label": "ENG",
+            "priority": "high",
+            "comments": 1,
+            "assignees": [
+              {
+                "name": "Tony Stark",
+                "avatar": "https://i.pravatar.cc/40?img=12"
+              }
+            ]
+          },
+          {
+            "id": "AF-151",
+            "title": "Update UI spacing in dashboard",
+            "label": "DESIGN",
+            "priority": "low",
+            "comments": 0,
+            "assignees": [
+              {
+                "name": "Bruce Wayne",
+                "avatar": "https://i.pravatar.cc/40?img=15"
+              }
+            ]
           }
         ]
       },
       {
         "id": "done",
         "title": "DONE",
-        "count": 3,
+        "count": 2,
         "issues": [
           {
             "id": "AF-099",
@@ -102,69 +156,73 @@ function KanbanBoard() {
   }
   const [columns, setColumns] = useState<Column[]>(data.columns);
 
-const handleDrop = (e: React.DragEvent, targetColumnId: string) => {
-  const issueId = e.dataTransfer.getData("issueId");
-  const sourceColumnId = e.dataTransfer.getData("sourceColumnId");
+  const handleDrop = (e: React.DragEvent, targetColumnId: string) => {
+    const issueId = e.dataTransfer.getData("issueId");
+    const sourceColumnId = e.dataTransfer.getData("sourceColumnId");
 
-  if (sourceColumnId === targetColumnId) return;
+    if (sourceColumnId === targetColumnId) return;
 
-  const newColumns = [...columns];
+    const newColumns = [...columns];
 
-  const sourceColumn = newColumns.find(col => col.id === sourceColumnId);
-  const targetColumn = newColumns.find(col => col.id === targetColumnId);
+    const sourceColumn = newColumns.find(col => col.id === sourceColumnId);
+    const targetColumn = newColumns.find(col => col.id === targetColumnId);
 
-  if (!sourceColumn || !targetColumn) return;
+    if (!sourceColumn || !targetColumn) return;
 
-  const issue = sourceColumn.issues.find(i => i.id === issueId);
-  if (!issue) return;
+    const issue = sourceColumn.issues.find(i => i.id === issueId);
+    if (!issue) return;
 
-  // remove from source
-  sourceColumn.issues = sourceColumn.issues.filter(i => i.id !== issueId);
+    // remove from source
+    sourceColumn.issues = sourceColumn.issues.filter(i => i.id !== issueId);
+    sourceColumn.count = sourceColumn.issues.length;
 
-  // add to target
-  targetColumn.issues.push(issue);
+    // add to target
+    targetColumn.issues.push(issue);
+    targetColumn.count = targetColumn.issues.length;
 
-  setColumns(newColumns);
-};
+    setColumns(newColumns);
+  };
   const handleDragStart = (
-  e: React.DragEvent,
-  issueId: string,
-  columnId: string
-) => {
-  e.dataTransfer.setData("issueId", issueId);
-  e.dataTransfer.setData("sourceColumnId", columnId);
-};
+    e: React.DragEvent,
+    issueId: string,
+    columnId: string
+  ) => {
+    e.dataTransfer.setData("issueId", issueId);
+    e.dataTransfer.setData("sourceColumnId", columnId);
+  };
   return (
     <div className='flex justify-around p-4 lg:px-20 xl:px-30 overflow-x-auto'>
       {/* Column */}
       {columns.map((column) => (
-        <div 
-         key={column.id}
-         onDragOver={(e) => e.preventDefault()} // VERY IMPORTANT
-         onDrop={(e) => handleDrop(e, column.id)}
-         className='w-1/3 min-w-60 md:min-w-75 rounded p-4'>
+        <div
+          key={column.id}
+          onDragOver={(e) => e.preventDefault()} 
+          onDrop={(e) => handleDrop(e, column.id)}
+          className='w-1/3 min-w-60 rounded p-4 overflow-hidden'>
+
           {/* Column header */}
           <h3 className='font-bold mb-2'>{column.title}</h3>
-          <p className='text-sm text-muted-foreground mb-3'>{column.count} issues</p>
+          <p className='text-sm text-muted-foreground mb-3'>{column.count}issues</p>
 
           {/* Issues box */}
+          <div className='max-h-[calc(100vh-200px)] overflow-y-auto no-scrollbar'>
           {column.issues.map((issue) => (
-            <div 
-            draggable 
-            onDragStart={(e) => handleDragStart(e, issue.id, column.id)}
-            className='p-2 bg-gray-200 rounded shadow mb-2 space-y-5 mb-5' key={issue.id}>
+            <div
+              draggable
+              onDragStart={(e) => handleDragStart(e, issue.id, column.id)}
+              className='p-2 bg-gray-200 rounded shadow space-y-5 mb-5' key={issue.id}>
               <div className='flex justify-between items-center mb-2'>
                 <h2 className='font-bold'>{issue.title}</h2>
 
                 {/* Images */}
                 <div className='flex justify-end shrink-0'>{issue.assignees.map((assignee, index) => (
-                  <Image width={6} 
-                  height={6} 
-                  key={assignee.name} 
-                  src={assignee.avatar} 
-                  alt={assignee.name} 
-                  className="w-6 h-6 rounded-full border-2 border-white -ml-2 first:ml-0"
-                  style={{ zIndex: issue.assignees.length - index }}
+                  <Image width={6}
+                    height={6}
+                    key={assignee.name}
+                    src={assignee.avatar}
+                    alt={assignee.name}
+                    className="w-6 h-6 rounded-full border-2 border-white -ml-2 first:ml-0"
+                    style={{ zIndex: issue.assignees.length - index }}
                   />
                 ))}</div>
               </div>
@@ -186,6 +244,7 @@ const handleDrop = (e: React.DragEvent, targetColumnId: string) => {
               </div>
             </div>
           ))}
+          </div>
         </div>
       ))}
     </div>

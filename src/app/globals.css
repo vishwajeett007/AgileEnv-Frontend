@@ -124,7 +124,6 @@
   }
 }
 
-/* Enables 3D space */
 .perspective {
   perspective: 1200px;
 }
@@ -134,7 +133,13 @@
   transform-style: preserve-3d;
 }
 
-/* Right → Left rotation */
 .rotate-y-180 {
   transform: rotateY(-360deg);
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
 }
