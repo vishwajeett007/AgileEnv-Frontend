@@ -9,7 +9,7 @@ export default function BacklogRightPanel({
   onClose: () => void;
 }) {
   return (
-    <div className="w-[360px] h-full bg-white border-l p-5 flex flex-col animate-slide-in">
+    <div className="w-full sm:w-90 h-full bg-white border-l p-5 flex flex-col animate-slide-in">
       {/* Header */}
       <div className="flex justify-between mb-4">
         <div>

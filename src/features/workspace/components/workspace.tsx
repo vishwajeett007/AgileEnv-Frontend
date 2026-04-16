@@ -25,10 +25,10 @@ export function Workspace({ workspaceId }: { workspaceId: string }) {
     
     return (
         <div className='flex justify-center items-center'>
-            <div className='w-full max-w-8xl h-[calc(100vh-61px)] flex flex-col md:flex-row justify-center gap-6 p-5 xl:px-10'>
+            <div className='w-full max-w-8xl flex flex-col md:flex-row justify-center gap-6 p-5 xl:px-10'>
                 {/* LeftSide */}
                 <div className='flex flex-col'>
-                    <div className='pb-10'>
+                    <div className='pb-5'>
                         <ul className='flex font-bold list-none gap-5 pb-3 border-b'>
                             <li>Dashboard</li>
                             <li>My Issues</li>
