@@ -1,12 +1,12 @@
 import { Input } from '@/components/ui/input';
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { updateIssue, createIssue } from '../store/board-slice';
+import { updateIssue, createIssue } from '../features/board/store/board-slice';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { VisuallyHidden } from '@/components/ui/visually-hidden';
 import { cn } from "@/shared/utils";
-import { IssueSchema } from '../schemas';
+import { IssueSchema } from '../features/board/schemas';
 
 
 function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: string, columnId: string, onClose: () => void, handleCreate?: boolean }) {

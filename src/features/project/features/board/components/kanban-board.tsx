@@ -1,13 +1,10 @@
 "use client"
 import { useState, useRef, useEffect } from 'react'
-// import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Image from 'next/image';
 import { Edit, MoreHorizontal, Trash2 } from 'lucide-react';
-import { Column, Issue } from '../types/kanban';
-import IssueModal from './issue-modal';
+import IssueModal from '../../../components/issue-modal';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setColumns, move, deleteIssue, updateIssue } from '../store/board-slice';
-import { IssueSchema } from '../schemas';
+import { move, deleteIssue, updateIssue } from '../store/board-slice';
 
 function KanbanBoard() {
 
@@ -57,7 +54,7 @@ function KanbanBoard() {
 
 
   return (
-    <div className='flex justify-around p-4 lg:px-20 xl:px-30 overflow-x-auto'>
+    <div className='flex justify-around p-4 bg-gray-50 lg:px-20 xl:px-30 overflow-x-auto'>
       {/* Column */}
       {columns.map((column) => (
         <div
@@ -83,7 +80,7 @@ function KanbanBoard() {
               <div
                 draggable
                 onDragStart={(e) => handleDragStart(e, issue.id, column.id)}
-                className='group p-2 bg-gray-200 rounded shadow space-y-5 mb-5 '
+                className='group p-2 bg-gray-100 rounded shadow space-y-5 mb-5 '
                 key={issue.id}>
                 {/* Issue header */}
                 <div className='flex justify-between mb-2 relative'>

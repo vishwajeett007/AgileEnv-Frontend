@@ -25,8 +25,9 @@ export function Workspace({ workspaceId }: { workspaceId: string }) {
     
     return (
         <div className='flex justify-center items-center'>
-            <div className='w-full max-w-6xl h-[calc(100vh-61px)] flex flex-col md:flex-row justify-around gap-6 p-5'>
-                <div className='flex flex-col max-w-4xl'>
+            <div className='w-full max-w-8xl h-[calc(100vh-61px)] flex flex-col md:flex-row justify-center gap-6 p-5 xl:px-10'>
+                {/* LeftSide */}
+                <div className='flex flex-col'>
                     <div className='pb-10'>
                         <ul className='flex font-bold list-none gap-5 pb-3 border-b'>
                             <li>Dashboard</li>
@@ -81,7 +82,7 @@ export function Workspace({ workspaceId }: { workspaceId: string }) {
                     </div>
                 </div>
                 {/* Activity Feed */}
-                <div className='w-full max-w-75 flex flex-col '>
+                <div className='w-full max-w-90 flex flex-col '>
                     <h1 className='text-xl font-bold'>Activity</h1>
                     <ul className='mt-4 h-75 max-h-87.5 overflow-y-auto'>
                         {activityFeed.map((activity) => (
