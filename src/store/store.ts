@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../features/auth/store/auth-Slice'
 import onboardingReducer from '../features/onboarding/store/onboarding-Slice'
 import { saveAuthToStorage, clearAuthStorage } from '../features/auth/store/authStorage'
+import boardReducer from '../features/project/features/board/store/board-slice'
 
 export const makeStore = () => {
     const store = configureStore({
         reducer: {
             auth: authReducer,
             onboarding: onboardingReducer,
+            board: boardReducer,
         },
     })
 
