@@ -182,7 +182,7 @@ export default function BacklogCenterPanel({
         </div>
       </div>
     </div>
-   {isOpen && <CreateIssueModal issueId=""  columnId="todo" onClose={()=> (setIsOpen(false))} handleCreate={true} />}
+   {isOpen && <CreateIssueModal issueId=""  columnId="backlog" onClose={()=> (setIsOpen(false))} handleCreate={true} />}
     </>
   );
 }

@@ -18,6 +18,7 @@ function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: str
     })
     const [issueTitle, setIssueTitle] = React.useState(issue?.title || "");
     const [priority, setPriority] = React.useState(issue?.priority || "medium");
+    const [status, setStatus] = React.useState(issue?.category || "todo");
     const [issueLabel, setIssueLabel] = React.useState(issue?.label || "");
     const [assignees, setAssignees] = React.useState(issue?.assignees || []);
     const [errors, setErrors] = React.useState<{
@@ -46,14 +47,15 @@ function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: str
                 title: issueTitle,
                 priority,
                 label: issueLabel,
-                assignees
+                assignees,
+                category: status
             };
-            dispatch(createIssue({ issue: newIssue, columnId }));
+            dispatch(createIssue({ issue: newIssue, columnId: status }));
         } else {
             dispatch(updateIssue({
                 issueId,
                 columnId,
-                updatedData: { title: issueTitle, priority, label: issueLabel }
+                updatedData: { title: issueTitle, priority, label: issueLabel, category: status }
             }));
         }
 
@@ -118,9 +120,9 @@ function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: str
                                 </label>
                             </div>
                             <div className="relative w-full">
-                                <Input
+                                <select
+                                    title="Issue-label"
                                     id="Issue-label"
-                                    placeholder=" "
                                     value={issueLabel}
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -133,8 +135,15 @@ function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: str
                                             label: result.success ? undefined : result.error.issues[0].message,
                                         }));
                                     }}
-                                    className="h-12 px-5 bg-gray-100 peer border border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                />
+                                    className="h-12 px-5 bg-gray-100 peer border border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg"
+                                >
+                                    <option value="ENG">ENG</option>
+                                    <option value="DES">DES</option>
+                                    <option value="QA">QA</option>
+                                    <option value="DEVOPS">DEVOPS</option>
+                                    <option value="PRODUCT">PRODUCT</option>
+                                    <option value="OTHER">OTHER</option>
+                                </select>
                                 {errors.label && <p className="text-red-500 text-sm mt-1">{errors.label}</p>}
 
                                 <label
@@ -171,6 +180,32 @@ function IssueModal({ issueId, columnId, onClose, handleCreate }: { issueId: str
                                         }`}
                                 >
                                     Priority
+                                </label>
+                            </div>
+                            <div className="relative w-full">
+                                <select
+                                    id="status"
+                                    value={status}
+                                    onChange={(e) => {
+                                        setStatus(e.target.value as"backlog" |"todo" | "in-progress" | "done");
+                                    }}
+                                    className="h-12 px-5 bg-gray-100 peer border border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg"
+                                >
+                                    <option value="backlog">Backlog</option>
+                                    <option value="todo">To Do</option>
+                                    <option value="in-progress">In-Progress</option>
+                                    <option value="done">Done</option>
+                                </select>
+
+                                <label
+                                    htmlFor="status"
+                                    className={`absolute left-3 bg-gray-100 px-1 rounded-sm transition-all duration-200
+                                ${status.trim().length > 0
+                                            ? "-top-2 text-xs text-gray-500"
+                                            : "top-3 text-base text-gray-400"
+                                        }`}
+                                >
+                                    Status
                                 </label>
                             </div>
                         </div>

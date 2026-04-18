@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Column } from '../types/kanban'
-import { set } from 'zod';
-import { create } from 'node:domain';
+
 const data: { columns: Column[] } = {
     "columns": [
         {
@@ -257,8 +256,16 @@ const boardSlice = createSlice({
             if (!issue) return;
 
             if (sourceColumnId === 'backlog' && targetColumnId !== 'backlog') {
-                issue.category = targetColumnId;
+                if(targetColumnId === 'todo') {
+                    issue.category = 'todo';
+                }
+                if(targetColumnId === 'in-progress') {
+                    issue.category = 'in-progress';
+                }
+                if(targetColumnId === 'done') {  
+                issue.category = 'done';
             }
+        } 
             if (targetColumnId === 'backlog') {
                 issue.category = 'backlog';
             }
@@ -286,7 +293,7 @@ const boardSlice = createSlice({
             action: PayloadAction<{
                 issueId: string;
                 columnId: string;
-                updatedData: Partial<{ title: string; priority: string; label: string; assignees: any[] }>;
+                updatedData: Partial<{ title: string; priority: string; label: string; assignees: any[]; category: string; points: number; }>;
             }>
         ) => {
             const { issueId, columnId, updatedData } = action.payload;
@@ -296,6 +303,14 @@ const boardSlice = createSlice({
 
             const issue = column.issues.find(i => i.id === issueId);
             if (!issue) return;
+
+            if(updatedData.category && updatedData.category !== columnId) {
+                const targetColumn = state.columns.find(c => c.id === updatedData.category);
+                if(targetColumn){
+                    column.issues = column.issues.filter(i => i.id !== issueId);
+                    targetColumn.issues.push(issue);
+                }
+            }
 
             Object.assign(issue, updatedData);
         },
