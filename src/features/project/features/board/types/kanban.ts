@@ -6,7 +6,9 @@ export type Assignee = {
 export type Issue = {
   id: string;
   title: string;
-  label: "ENG" | "DESIGN" | "DEVOPS";
+  label: "ENG" | "DESIGN" | "DEVOPS" | "PRODUCT" | "QA";
+  category: string;
+  points: number;
   priority: "low" | "medium" | "high";
   comments: number;
   assignees: Assignee[];

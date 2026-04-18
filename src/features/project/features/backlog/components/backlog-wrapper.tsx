@@ -3,13 +3,7 @@
 import { useState } from "react";
 import BacklogCenterPanel from "./backlog-center-panel";
 import BacklogRightPanel from "./backlog-right-panel";
-
-export type Issue = {
-  id: string;
-  title: string;
-  tag?: string;
-  points: number;
-};
+import { Issue } from "../../board/types/kanban";
 
 export default function BacklogWrapper() {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);

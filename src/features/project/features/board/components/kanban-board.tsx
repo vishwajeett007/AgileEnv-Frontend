@@ -9,8 +9,8 @@ import { move, deleteIssue, updateIssue } from '../store/board-slice';
 function KanbanBoard() {
 
   const dispatch = useAppDispatch();
-  const columns = useAppSelector((state) => state.board.columns);
-  
+  const column = useAppSelector((state) => state.board.columns);
+  const  columns = column.filter(col => col.id !== 'backlog'); 
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [selectedIssue, setSelectedIssue] = useState<{ issueId: string; columnId: string } | null>(null);
   const [createIssue, setCreateIssue] = useState(false);
