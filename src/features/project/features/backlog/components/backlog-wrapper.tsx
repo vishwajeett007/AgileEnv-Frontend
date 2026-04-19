@@ -18,7 +18,7 @@ export default function BacklogWrapper() {
 
       {/* Right Panel */}
       <div
-        className={`transition-all duration-300 ${
+        className={`transition-all duration-300 ease-in-out  ${
           selectedIssue ? "w-90" : "w-0"
         }`}
       >

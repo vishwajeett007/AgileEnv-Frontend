@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Issue } from "../../board/types/kanban";
 import CreateIssueModal from "@/features/project/components/issue-modal";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { move } from "../../board/store/board-slice";
 

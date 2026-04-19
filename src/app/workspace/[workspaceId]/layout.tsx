@@ -7,7 +7,7 @@ export default function WorkspaceLayout({
   return (
     <>
      <header><WorkspaceHeader/></header>
-    <main>
+    <main className="overflow-hidden">
       {children}
     </main>
     </>

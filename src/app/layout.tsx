@@ -78,7 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased font-roboto`}
+        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased font-roboto bg-gray-50 text-gray-900 min-h-screen overflow-hidden`}
         suppressHydrationWarning
       >
         <StoreProvider>

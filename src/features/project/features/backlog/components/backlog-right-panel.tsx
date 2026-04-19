@@ -5,13 +5,12 @@ import { Edit } from "lucide-react";
 import IssueModal from "@/features/project/components/issue-modal";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { updateIssue } from "../../board/store/board-slice";
-import { Input } from "@/components/ui/input";
 
 export default function BacklogRightPanel({
   issue,
   onClose,
 }: {
-  issue: Issue;
+  issue: Issue ;
   onClose: () => void;
 }) {
   const [edits, setEdits] = useState(false);
