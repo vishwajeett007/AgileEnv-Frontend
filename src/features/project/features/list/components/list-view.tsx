@@ -13,7 +13,7 @@ function ListView() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-  const [filtered, setFilter] = useState("high");
+  const [filtered, setFilter] = useState("all");
 
   const handleSelectIssue = (issue: Issue) => {
     setSelectedIssue(issue);

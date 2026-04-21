@@ -32,7 +32,7 @@ export function WorkspaceList({
         </div>
       </div>
 
-      <div className="border-t border-border py-4">
+      <div className="border-t border-border py-4 overflow-auto">
         {workspaces.map((workspace) => (
           <WorkspaceListItem
             key={workspace.id}
