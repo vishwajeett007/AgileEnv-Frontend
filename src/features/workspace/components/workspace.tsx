@@ -24,7 +24,7 @@ export function Workspace({ workspaceId }: { workspaceId: string }) {
     ];
     
     return (
-        <div className='flex justify-center items-center'>
+        <div className='flex justify-center items-center overflow-auto'>
             <div className='w-full max-w-8xl flex flex-col md:flex-row justify-center gap-6 p-5 xl:px-10'>
                 {/* LeftSide */}
                 <div className='flex flex-col'>

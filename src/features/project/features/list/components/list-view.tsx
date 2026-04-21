@@ -27,13 +27,13 @@ function ListView() {
 });
 
   return (
-    <div className="flex h-[calc(100vh-120px)] w-full overflow-hidden bg-gray-50">
+    <div className="flex h-[calc(100vh-200px)] sm:h-full w-full bg-gray-50">
 
       {/* LEFT SIDE */}
-      <div className="relative w-full flex flex-col flex-1 bg-white text-gray-800">
+      <div className={`${selectedIssue ? "hidden sm:block" : "w-full"} relative flex flex-col w-full bg-white text-gray-800`}>
 
         {/* Header */}
-        <header className="flex justify-between items-center px-6 py-4 border-b">
+        <header className="flex justify-between items-center px-2 sm:px-6 py-4 border-b">
           <ul className="flex gap-3 [&>li]:px-3 [&>li]:py-1 [&>li]:rounded-md [&>li]:cursor-pointer [&>li]:hover:bg-blue-100">
             <li onClick={() => (setFilter("all"))} className={`${filtered === "all" ? "bg-gray-200/70" : ""} font-medium`}>
               All Issues
@@ -58,7 +58,7 @@ function ListView() {
         </header>
 
         {/* Table Header */}
-        <div className="grid grid-cols-6 px-6 py-3 text-xs font-semibold text-gray-500 border-b bg-gray-50">
+        <div className="grid grid-cols-6 gap-4 px-6 py-3 text-xs font-semibold text-gray-500 border-b bg-gray-50 ">
           <span>ID</span>
           <span className="col-span-2">TITLE</span>
           <span>PRIORITY</span>
@@ -72,7 +72,7 @@ function ListView() {
             <li
               key={issue.id}
               onClick={() => handleSelectIssue(issue)}
-              className="grid grid-cols-6 px-6 py-4 items-center hover:bg-gray-100 transition cursor-pointer"
+              className="grid grid-cols-6 px-6 py-4 items-center hover:bg-gray-100 transition cursor-pointer gap-2"
             >
               <span className="text-gray-500">{issue.id}</span>
 

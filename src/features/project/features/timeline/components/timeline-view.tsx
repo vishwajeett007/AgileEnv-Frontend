@@ -222,10 +222,10 @@ function TimelineView() {
     };
 
     return (
-        <div className='grid  sm:grid-cols-[300px_1fr] h-[calc(100vh-120px)]'>
+        <div className='grid sm:grid-cols-[300px_1fr] h-[calc(100vh-120px)] overflow-auto'>
 
             {/* Sidebar */}
-            <div className='hidden sm:flex sticky left-0 w-full h-full flex-col border-r     border-gray-300 overflow-hidden bg-white z-5'>
+            <div className='hidden sm:flex sticky left-0 w-full h-full flex-col border-r     border-gray-300 bg-white z-5'>
                 <div className=' relative w-full flex gap-2 h-13.25 p-3 border-b border-gray-300'>
                     <h2 className='text-xl font-bold'>Tasks</h2>
                 </div>

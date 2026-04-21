@@ -11,7 +11,7 @@ export default async function ProjectLayout({
   const { workspaceId, projectId } = await params;
   return (
     <ProjectViewProvider>
-      <div className="flex h-full">
+      <div className="flex h-full overflow-hidden">
         {/* Sidebar */}
         <ProjectSidebar workspaceId={workspaceId} projectId={projectId} />
 

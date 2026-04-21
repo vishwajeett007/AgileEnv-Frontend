@@ -35,7 +35,7 @@ function ProjectHeader({ workspaceId, projectId}: { workspaceId: string; project
               List
             </Link>
           </div>
-          <div className={`hidden sm:flex gap-2.5 ${selected === 'timeline' ? '' : 'hidden'}`}>
+          <div className={`space-x-2 ${selected === 'timeline' ? '' : 'hidden'}`}>
                     <button 
                         onClick={() => setZoom("day")}
                         className={`px-4 py-1 rounded ${zoom === "day" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
