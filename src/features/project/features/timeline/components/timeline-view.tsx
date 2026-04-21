@@ -222,10 +222,10 @@ function TimelineView() {
     };
 
     return (
-        <div className='grid grid-cols-[300px_1fr] h-[calc(100vh-120px)]'>
+        <div className='grid  sm:grid-cols-[300px_1fr] h-[calc(100vh-120px)]'>
 
             {/* Sidebar */}
-            <div className='sticky left-0 w-full h-full flex flex-col border-r border-gray-300 overflow-hidden bg-white z-5'>
+            <div className='hidden sm:flex sticky left-0 w-full h-full flex-col border-r     border-gray-300 overflow-hidden bg-white z-5'>
                 <div className=' relative w-full flex gap-2 h-13.25 p-3 border-b border-gray-300'>
                     <h2 className='text-xl font-bold'>Tasks</h2>
                 </div>
@@ -244,11 +244,11 @@ function TimelineView() {
 
 
             {/* Main Content */}
-            <div className=' flex flex-col w-full flex-1'>
+            <div className='relative flex flex-col w-full flex-1 overflow-auto'>
 
                 {/* Date header */}
-                <div className="flex items-end border-b border-gray-200 bg-gray-50">
-                    <div className="flex w-full">
+                <div className="sticky top-0 left-0 right-0 flex items-end border-b border-gray-200 bg-gray-50 z-10">
+                    <div className="flex w-max min-w-full">
                         {headers.map((header, idx) => (
                             <div
                                 key={idx}
@@ -263,14 +263,14 @@ function TimelineView() {
 
 
                 {/* Timeline Items */}
-                <div className='flex-1 overflow-y-auto'>
+                <div className='flex-1'>
                     {timelineItems.tasks.map((task, index) => {
                         const position = getTaskPosition(task);
                         const width = getTaskWidth(task);
                         const isMilestone = task.type === "milestone";
                         return (
-                            <div key={index} className="flex items-center border-b border-gray-200 h-17.25 hover:bg-gray-50">
-                                <div className="relative flex w-full">
+                            <div key={index} className="flex items-center w-max min-w-full border-b border-gray-200 h-17.25 hover:bg-gray-50">
+                                <div className="relative flex w-max min-w-full">
                                     {headers.map((_, headerIndex) => (
                                         <div
                                             key={headerIndex}
