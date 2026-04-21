@@ -2,14 +2,14 @@
 import Link from 'next/link';
 import { Kanban, GitGraph, Calendar, List } from 'lucide-react';
 import { usePathname } from "next/navigation";
-import { useState } from 'react';
+import { useProjectView } from "./project-view-context";
 
 function ProjectHeader({ workspaceId, projectId}: { workspaceId: string; projectId: string; }) {
   const pathname = usePathname();
+  const { zoom, setZoom } = useProjectView();
 
   const segments = pathname.split('/');
   const selected = segments[segments.length - 1];
-  const [zoom, setZoom] = useState<"day" | "week" | "month">("day");
 
   return (
     <div className="flex justify-between items-center sticky top-0 bg-white border-b px-6 py-3 z-10">
